@@ -1,0 +1,15 @@
+﻿Technical Indicators （技术性指标）,均线指标类因子 (Moving Average Factor),Simple Moving Average (SMA); Exponential Moving Average (EMA); Weighted Moving Average (WMA); Double Exponential Moving Average (DEMA); Triple Exponential Moving Average (TEMA); Gann High Low Activator (HiLo); Hull Exponential Moving Average (HMA); Linear Regression Moving Average (LINREG); Symmetric Weighted Moving Average (SMWA); Variable Index Dynamic Average (VIDYA); Volume Weighted Moving Average (VWMA); Zero Lag Moving Average (ZLMA); and etc. 
+,"成交量类因子
+(Volume Factor)",Accumulation/Distribution Oscillator (ADOSC); Chaikin Money Flow (CMF); Price Volume Trend (PVT); On-Balance Volume (OBV); Archer On-Balance Volume (AOBV); Elder’s Force Index (EFI); Ease of Movement (EOM); Money Flow Index (MFI); Positive Volume Index (PVI); Negative Volume Index (NVI); Price-Volume (PVOL); Price Volume Rank (PVR); Volume Profile (VP); etc. 
+,"动量类因子
+(Momentum Factor)",Rate of Change (ROC); Awesome Oscillator (AO); Absolute Price Oscillator (APO); Bias (BIAS); Balance of Power (BOP); Commodity Channel Index (CCI); Chanda Forecast Oscillator (CFO); Center of Gravity (CG); Correlation Trend Indicator (CTI); Efficiency Ratio (ER); Elder Ray Index (ERI); Moving Average Convergence Divergence (MACD); Stochastic Oscillator (KDJ); Inertia; Relative Strength Index (RSI); Relative Strength Xtra (RSX); n-day Momentum (MOM); Psychological Line (PSL); Slope; Stochastic Momentum Index Ergodic Indicator (SMI Ergodic Indicator); Squeeze (SQZ); Squeeze Pro (SQZPRO); Stochastic Relative Strength Index (STOCHRSI); Triple Exponentially Smoothed Moving Average (TRIX); True Strength Index (TSI); etc.
+,"趋势类因子
+(Trend Factor)",Average Directional Movement Index (ADX); Archer Moving Averages Trends (AMAT); Choppiness Index (CHOP); Decay; Increasing/Decreasing; Detrend Price Oscillator (DPO); Long run/Short run; Q Stick (qstick); TTM Trend; Vortex (Vortex Indicator); and etc.
+,"波动性类因子
+(Volatility Factor) ",Historical Volatility (HV); Implied Volatility (IV); beta ($\beta$); Aberration; True Range (TR); Average True Range (ATR); Bollinger Bands (BBands); Mass Index (massi); Relative Volatility Index (RVI); Acceleration Bands (accbands); Elder’s Thermometer (thermos); Ulcer Index (ui); etc.  
+Fundamental Indicators (基本面指标),"基本面类因子 (经营效率，盈利能力，成长性和估值，现金流，财务质量) 
+(Fundamental Factor)","Asset Turnover Ratio (ATR); Inventory Turnover Ratio (ITR); Account Receivable Turnover Ratio (ARTR); Long-term Asset Turnover Ratio (LATR), Short-term (Operating) Asset Turnover Ratio (SATR); EV/EBITDA; EV/Sales; Free Cash Flow Yield (FCF Yield); Price/Earnings Ratio (PE); Price/Book Ratio (PB); Price/Sales (PS); Return on Assets (ROA); Return on Equity (ROE); Return on Invested Capital (ROIC); Dividend Yield; Gross Margin Ratio (GMR); Operating Profit Margin Ratio (OMR); Net Profit/EBIT Margin Ratio (NPR); EBITDA Margin Ratio; Weighted Average Cost of Capital (WACC); Economic Profit (ROIC-WACC); and etc."
+,"风格因子 
+(Other Style Factor)",Size; Dividend; Sentiment; etc.  
+Portfolio Indicators (组合类指标),"投资策略因子
+(Strategy & Portfolio Factor)",Information Ratio; Maximum Drawdown (MDD); etc. 

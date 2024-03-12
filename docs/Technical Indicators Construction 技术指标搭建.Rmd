@@ -1,0 +1,1238 @@
+--- 
+title: "techindicator"
+author: "Albert Huang"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+# output: bookdown::gitbook
+documentclass: book
+bibliography: [book.bib, packages.bib]
+biblio-style: apalike
+link-citations: yes
+github-repo: 
+header-includes:
+  - \usepackage{draftwatermark}
+  - \usepackage{xcolor}
+  - \usepackage{siunitx}
+  - \newcolumntype{d}{S[table-format=3.2]}
+output:
+  rticles::ctex:
+    fig_caption: yes
+    number_sections: yes
+    toc: yes
+    toc_depth: 3
+editor_options: 
+  markdown: 
+    wrap: sentence
+description: "THIS IS THE DESCRIP PART."
+---
+# Technical Indicators Construction 技术指标搭建
+
+```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+# Clean the environment
+rm(list = ls())
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+### Load packages
+library(tsibble)
+library(lubridate)
+library(tidyverse)
+library(quantmod)
+library(rvest) 
+library(xts)
+library(TTR)
+library(blotter)
+library(rvest)
+library(quantstrat)
+library(zoo)
+library(knitr)
+library(kableExtra)
+# nasdaq api 44D9F6_XzqEy8xstEuxb
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+# Data Intake
+mega7data = read.csv("mega7tidy.csv")
+mega7mcap = read.csv("mega7marketcap.csv")
+```
+
+```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+# Full data part data intake for loop 
+
+# Web-scrape SP500 stock list
+sp_500_stock_list <- 
+ read_html("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies") %>%
+  html_node("table.wikitable") %>%
+  html_table() %>%
+  select(`Ticker symbol`, Security, `GICS Sector`, `GICS Sub Industry`) %>%
+  as_tibble()
+# Format names
+names(sp_500_stock_list) <- 
+  sp_500_stock_list %>% 
+  names() %>% 
+  str_to_lower() %>% 
+  make.names()
+# Show results
+sp_500_stock_list
+```
+
+```{r include=FALSE}
+# Full data part data intake for loop 
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Data cleanup & add marketcap column to the main dataframe
+mega7data_modified <- 
+  mega7data %>%
+  inner_join(mega7mcap, join_by(symbol == Stock)) %>%
+  rename(market_cap = Marketcap) %>%
+  select(!X.x) %>% 
+  select(!X.y) 
+```  
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.pos='H'}
+kbl(tail(mega7data_modified,10), booktabs = T, linesep = "", 
+    digits = 1, caption = "Cleaned Data Glance: NYSE and NASDAQ Stocks", 
+    format.args = list(big.mark = ",", scientific = FALSE)) %>%
+  kable_styling(latex_options = c("striped","scale_down",
+                                  "HOLD_position"), 
+                position = "center") %>%
+  column_spec(c(3,8,9,10), bold = T) %>%
+  footnote(general = "Output 2.1.a: Last 10 rows are shown.")
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+cap_remove_list_intermed <-
+  mega7data_modified %>%
+  filter(market_cap < 7e+9) 
+
+cap_remove_list <- 
+  pull(cap_remove_list_intermed, symbol)  %>%
+  unique()
+``` 
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+mega7data_modified <- 
+  mega7data_modified %>%
+  filter(!symbol %in% cap_remove_list)
+
+print(cap_remove_list)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+mega7data_modified <-
+  mega7data %>% 
+  mutate(week = strftime(date,format = "%V")) %>%
+  mutate(year  = year(ymd(date))) 
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE,fig.pos='H'}
+weekavg_volume <-
+  mega7data_modified %>%
+  group_by(year,week,symbol) %>%
+  summarise(average.volume = mean(volume)) 
+
+kbl(tail(weekavg_volume,10), booktabs = T, linesep = "",
+    digits = 1, caption = "Average Weekly Trading Volume", 
+    format.args = list(scientific = FALSE), longtable = T,
+    col.names = c("Year","Week","Symbol","Average Volume")) %>%
+  kable_styling(latex_options = c("striped", "scale_down",
+                                  "HOLD_position"), 
+                position = "center") %>%
+  column_spec(c(4), bold = T) %>%
+  footnote(general = "Output 2.2.a: Last 10 rows are shown.")
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+volume_remove_list_intermed <-
+  weekavg_volume %>%
+  filter(average.volume < 1e+6) 
+
+volume_remove_list <- 
+  pull(volume_remove_list_intermed, symbol)  %>%
+  unique()
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+mega7data_modified <- 
+  mega7data_modified %>%
+  filter(!symbol %in% volume_remove_list)
+
+print(volume_remove_list)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+mega7data_modified <-
+  mega7data_modified %>% 
+  group_by(symbol) %>%
+  mutate(price_pctchange = (adjusted/lag(adjusted)-1)*100)
+
+pctchange_display <-
+  mega7data_modified %>% 
+  select(symbol,date,adjusted,price_pctchange) %>%
+  tail(10)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.pos='H'}
+kbl(pctchange_display, booktabs = T, linesep = "",
+    digits = 4, caption = "Price Percentage Change (1-day ROC)", 
+    format.args = list(big.mark = ",", scientific = FALSE),
+    col.names = c("Symbol","Date","Adj Close","Price Change %")) %>%
+  kable_styling(latex_options = c("striped", "scale_down", 
+                                  "HOLD_position"), 
+                position = "center") %>%
+  column_spec(c(3,4), bold = T) %>%
+  footnote(general = "Output 2.2.b: Last 10 rows are shown.")
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+prcpct_remove_list_intermed <-
+  mega7data_modified %>%
+  filter(price_pctchange < -15) 
+
+prcpct_remove_list <- 
+  pull(prcpct_remove_list_intermed, symbol)  %>%
+  unique()
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+mega7data_modified <- 
+  mega7data_modified %>%
+  filter(!symbol %in% prcpct_remove_list)
+
+print(prcpct_remove_list)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+mega7data_modified <-
+  mega7data_modified %>%
+  mutate(annual_volatility = price_pctchange * sqrt(252)) 
+
+annual_volatility_display <-
+  mega7data_modified %>%
+  select(date, adjusted, symbol, annual_volatility) %>%
+  na.omit() %>%
+  tail(10)
+``` 
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.pos='H'}
+kbl(annual_volatility_display, booktabs = T, linesep = "",
+    digits = 4, caption = "Implied Annualized Volatility", 
+    format.args = list(big.mark = ",", scientific = FALSE),
+    col.names = c("Date","Adj Close","Symbol","Annual Volatility %")) %>%
+  kable_styling(latex_options = c("striped", "scale_down",
+                                  "HOLD_position"), 
+                position = "center") %>%
+  column_spec(c(2,4), bold = T) %>%
+  footnote(general = "Output 2.2.c: Last 10 rows are shown.")
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+volat_remove_list_intermed <-
+  mega7data_modified %>%
+  filter(abs(annual_volatility) > 200) # change to 100
+
+volat_remove_list <- 
+  pull(volat_remove_list_intermed, symbol)  %>%
+  unique()
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+mega7data_modified <- 
+  mega7data_modified %>%
+  filter(!symbol %in% volat_remove_list)
+
+print(volat_remove_list)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.pos='H'}
+# ADD STOCK REMOVED COMP NAME FULL, GICS SECTOR 
+remove_stock_list <- 
+  t(rbind(cap_remove_list,volume_remove_list,prcpct_remove_list,volat_remove_list)) 
+
+colnames(remove_stock_list) <- "remove_stock_list"
+
+kbl(tail(remove_stock_list,10), booktabs = T, linesep = "", 
+    col.names = "Symbol" , 
+    caption = "Stocks Removed by the Subjective Indicators") %>%
+  kable_styling(latex_options = c("striped", "scale_down",
+                                  "HOLD_position"), 
+                position = "center", full_width = T) %>%
+  column_spec(c(2), bold = T) %>%
+  footnote(general = "Output 2.2.c: Last 10 rows are shown.",
+           symbol = "In no means these removed stocks will bring negative investment returns, some of them may bring substantial (positive) future returns.")
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Define a function to compute the value for SMA using the adjusted close price with parameter settings of n days 
+
+SMA_comput <- function (price,n){
+  sma <- c()
+  sma[1:(n-1)] <- NA
+  for (i in n:length(price)){
+    sma[i] <- mean(price[(i-n+1):i])
+  }
+  sma <- reclass(sma,price)
+  return(sma) 
+}
+```  
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Compute SMA for all stocks, Full Data
+mega7data_modified <-
+  mega7data_modified %>%
+  group_by(symbol) %>%
+  mutate(SMA5 = SMA_comput(adjusted, 5), 
+         SMA8 = SMA_comput(adjusted,8),
+         SMA13 = SMA_comput(adjusted,13),
+         SMA20 = SMA_comput(adjusted,20),
+         SMA50 = SMA_comput(adjusted,50),
+         SMA200 = SMA_comput(adjusted,200))
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Alternative way: 
+# Below utilizes the `TTR` package directly for SMA computations: SMA()
+# TSLA <- xts(TSLA$adjusted,TSLA$date)
+# SMA200 <- SMA(TSLA,n = 200) 
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+result_231a <- 
+  mega7data_modified %>%
+  slice(which(symbol == "TSLA")) %>%
+  mutate(date = as.Date(date)) %>%
+  select(date, adjusted, SMA5, SMA8, SMA13, 
+         SMA20, SMA50, SMA200, volume)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.pos='H'}
+# Display TSLA output (SMA values)
+kbl(tail(result_231a,10), booktabs = T, linesep = "", 
+    digits = 1, caption = "SMA Computations (TSLA.US)",
+    format.args = list(big.mark = ",", scientific = FALSE),
+    col.names = c("Symbol","Date","Adj Close","SM5","SMA8",
+                  "SMA13","SMA20","SMA50","SMA200","Volume")) %>%
+  kable_styling(latex_options = c("striped", "scale_down",
+                                  "HOLD_position"), 
+                position = "center") %>%
+  column_spec(c(4:9), bold = T) %>%
+  footnote(general = "Output 2.3.1.a: Last 10 rows are shown.")
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+TSLA_graph_SMA <- xts::last(result_231a,'365 days')
+TSLA_graph_SMA <- data.frame(TSLA_graph_SMA$adjusted,
+                             TSLA_graph_SMA$volume, TSLA_graph_SMA$date)
+# TSLA <- zoo(TSLA$TSLA.adjusted,TSLA$TSLA.date)
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+# GRAPH SUPRESEED
+chartSeries(TSLA_graph_SMA, subset = '2024-01-01::2024-02-23',
+            type = "bars",
+            theme=chartTheme('black'))
+
+# Add Modern 5-8-13 SMA strategy graph
+addSMA(n = 5,on = 1,col = "white")
+addSMA(n = 8,on = 1,col = "yellow") 
+addSMA(n = 13,on = 1,col = "purple") 
+# Adapts a new method in SMA graphs missing legends
+# knit works not run all chuncks
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+# GRAPH SUPRESEED
+chartSeries(TSLA_graph_SMA, subset = '2024-01-01::2024-02-23',
+            type = "bars",
+            theme=chartTheme('black'))
+# Add Classic 50-200 SMA strategy graph
+addSMA(n = 50,on = 1,col = "grey") 
+addSMA(n = 200,on = 1,col = "blue") 
+# Adapts a new method in SMA graphs missing legends
+# knit works not run all chunks
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# SMA Trading Signal 1: Price > SMA20
+# SMA Rule setup and Generate Signals 
+mega7data_modified <-
+  mega7data_modified %>%
+  mutate(tsignal1 = case_when(SMA20 < adjusted ~ 'BUY',
+                              SMA20 >= adjusted ~ 'SELL'))
+# consider about HOLD
+# sigCrossover
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# SMA Trading Signal 2: SMA50 > SMA200
+# SMA Rule setup and Generate Signals 
+mega7data_modified <- 
+  mega7data_modified %>%
+  group_by(symbol) %>%
+  mutate(tsignal2 = case_when(
+    lag(SMA50) < lag(SMA200) & SMA50 > SMA200 ~ 'BUY',
+    lag(SMA50) >= lag(SMA200) & SMA50 < SMA200 ~ 'SELL',
+    lag(SMA50) < lag(SMA200) & SMA50 <= SMA200 ~ 'HOLD',
+    lag(SMA50) >= lag(SMA200) & SMA50 >= SMA200 ~ 'HOLD'))
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# SMA Trading Signal 3a: SMA5 > SMA8
+# SMA Trading Signal 3b: SMA8 > SMA13
+# SMA Rule setup and Generate Signals 
+mega7data_modified <- 
+  mega7data_modified %>%
+  group_by(symbol) %>%
+  mutate(tsignal3a = case_when(
+    lag(SMA5) < lag(SMA8) & SMA5 > SMA8 ~ 'BUY',
+    lag(SMA5) >= lag(SMA8) & SMA5 < SMA8 ~ 'SELL',
+    lag(SMA5) < lag(SMA8) & SMA5 <= SMA8 ~ 'HOLD',
+    lag(SMA5) >= lag(SMA8) & SMA5 >= SMA8 ~ 'HOLD')) %>%
+  mutate(tsignal3b = case_when(
+    lag(SMA8) < lag(SMA13) & SMA8 > SMA13 ~ 'BUY',
+    lag(SMA8) >= lag(SMA13) & SMA8 < SMA13 ~ 'SELL',
+    lag(SMA8) < lag(SMA13) & SMA8 <= SMA13 ~ 'HOLD',
+    lag(SMA8) >= lag(SMA13) & SMA8 >= SMA13 ~ 'HOLD'))
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# SMA Trading Signal 3: only when 3a & 3b are met simultaneously
+# SMA Rule setup and Generate Signals 
+mega7data_modified <- 
+  mega7data_modified %>%
+  mutate(tsignal3 = case_when(
+    tsignal3a == 'BUY' & tsignal3b == 'BUY' ~ 'BUY',
+    tsignal3a == 'BUY' & tsignal3b == 'SELL' ~ 'HOLD',
+    tsignal3a == 'BUY' & tsignal3b == 'HOLD' ~ 'HOLD',
+    tsignal3a == 'HOLD' & tsignal3b == 'HOLD' ~ 'HOLD',
+    tsignal3a == 'HOLD' & tsignal3b == 'BUY' ~ 'HOLD',
+    tsignal3a == 'HOLD' & tsignal3b == 'SELL' ~ 'HOLD',
+    tsignal3a == 'SELL' & tsignal3b == 'BUY' ~ 'HOLD',
+    tsignal3a == 'SELL' & tsignal3b == 'SELL' ~ 'SELL',
+    tsignal3a == 'SELL' & tsignal3b == 'HOLD' ~ 'HOLD')) 
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=TRUE}
+# Show TSLA signals results (SMA)
+result_231b <-
+  mega7data_modified %>%
+  slice(which(symbol == "TSLA")) %>%
+  ungroup() %>%
+  select(date, adjusted, tsignal1, tsignal2, 
+         tsignal3, tsignal3a, tsignal3b) %>%
+  tail(8)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.pos='H'}
+# Display TSLA output (SMA signals)
+kbl(result_231b, booktabs = T, linesep = "", longtable = T, 
+    digits = 1, caption = "SMA Trading Signals (TSLA.US)", 
+    format.args = list(big.mark = ",", scientific = FALSE),
+    col.names = c("Date","Adj Close","tsignal1","tsignal2",
+                  "tsignal3","tsignal3a","tsignal3b")) %>%
+  kable_styling(latex_options = c("striped", "scale_up",
+                                  "HOLD_position"),
+                full_width = F) %>%
+  column_spec(c(3:5), bold = T) %>%
+  column_spec(1, width = "1.9cm") %>%
+  footnote(general = "Output 2.3.1.b: Last 8 rows are shown.",
+  number = "Includes tsignal1, tsignal2, tsignal3, tsignal3a and tsignal3b.")
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Define a function to compute the value for EMA using the adjusted close price with parameter settings of n days 
+
+EMA_comput <- function (price,n){
+  ema <- c()
+  ema[1:(n-1)] <- NA
+  ema[n]<- mean(price[1:n])
+  beta <- 2/(n+1)
+  for (i in (n+1):length(price)){
+    ema[i]<-beta * price[i] + 
+      (1-beta) * ema[i-1]
+  }
+  ema <- reclass(ema,price)
+  return(ema)
+}
+```  
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Compute SMA for all stocks, Full Data
+mega7data_modified <-
+  mega7data_modified %>%
+  group_by(symbol) %>%
+  mutate(EMA5 = EMA_comput(adjusted, 5), 
+         EMA8 = EMA_comput(adjusted,8),
+         EMA13 = EMA_comput(adjusted,13),
+         EMA20 = EMA_comput(adjusted,20),
+         EMA50 = EMA_comput(adjusted,50),
+         EMA200 = EMA_comput(adjusted,200))
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Alternative way: 
+# Below utilizes the `TTR` package directly for EMA computations: EMA()
+# TSLA <- xts(TSLA_graph_SMA$adjusted,TSLA_graph_SMA$date)
+# EMA200 <- EMA(TSLA,n = 200) 
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+TSLA_graph_EMA <- 
+  mega7data_modified %>%
+  slice(which(symbol == "TSLA")) %>%
+  mutate(date = as.Date(date)) %>%
+  select(date, adjusted, EMA5, EMA8, EMA13, 
+         EMA20, EMA50, EMA200, volume)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.pos='H'}
+# Display TSLA output (EMA values)
+kbl(tail(TSLA_graph_EMA,10), booktabs = T, linesep = "", 
+    digits = 1, caption = "EMA Computations (TSLA.US)", 
+    format.args = list(big.mark = ",", scientific = FALSE),
+    col.names = c("Symbol","Date","Adj Close","EM5","EMA8",
+                  "EMA13","EMA20","EMA50","EMA200","Volume")) %>%
+  kable_styling(latex_options = c("striped", "scale_down",
+                                  "HOLD_position"), 
+                position = "center") %>%
+  column_spec(c(4:9), bold = T) %>%
+  footnote(general = "Output 2.3.2.a: Last 10 rows are shown.")
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+TSLA_graph_EMA <- xts::last(TSLA_graph_EMA,'365 days')
+TSLA_graph_EMA <- data.frame(TSLA_graph_EMA$adjusted,
+                             TSLA_graph_EMA$volume, TSLA_graph_EMA$date)
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+# GRAPH SUPRESEED
+chartSeries(TSLA_graph_EMA, subset = '2024-01-01::2024-02-23',
+            type = "bars",
+            theme=chartTheme('black'))
+
+# Add Modern 5-8-13 EMA strategy graph
+addEMA(n = 5,on = 1,col = "white")
+addEMA(n = 8,on = 1,col = "yellow") 
+addEMA(n = 13,on = 1,col = "purple") 
+# Adapts a new method in EMA graphs missing legends
+# knit works not run all chuncks
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+# GRAPH SUPRESEED
+chartSeries(TSLA_graph_EMA, subset = '2024-01-01::2024-02-23',
+            type = "bars",
+            theme=chartTheme('black'))
+# Add Classic 50-200 EMA strategy graph
+addEMA(n = 50,on = 1,col = "grey") 
+addEMA(n = 200,on = 1,col = "blue") 
+# Adapts a new method in EMA graphs missing legends
+# knit works not run all chunks
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# EMA Trading Signal 4: Price > EMA20
+# EMA Rule setup and Generate Signals 
+mega7data_modified <-
+  mega7data_modified %>%
+  mutate(tsignal4 = case_when(EMA20 < adjusted ~ 'BUY',
+                              EMA20 >= adjusted ~ 'SELL'))
+# consider about HOLD
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# EMA Trading Signal 5: EMA50 > EMA200
+# EMA Rule setup and Generate Signals 
+mega7data_modified <- 
+  mega7data_modified %>%
+  group_by(symbol) %>%
+  mutate(tsignal5 = case_when(
+    lag(EMA50) < lag(EMA200) & EMA50 > EMA200 ~ 'BUY',
+    lag(EMA50) >= lag(EMA200) & EMA50 < EMA200 ~ 'SELL',
+    lag(EMA50) < lag(EMA200) & EMA50 <= EMA200 ~ 'HOLD',
+    lag(EMA50) >= lag(EMA200) & EMA50 >= EMA200 ~ 'HOLD'))
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# EMA Trading Signal 6a: EMA5 > EMA8
+# EMA Trading Signal 6b: EMA8 > EMA13
+# EMA Rule setup and Generate Signals 
+mega7data_modified <- 
+  mega7data_modified %>%
+  group_by(symbol) %>%
+  mutate(tsignal6a = case_when(
+    lag(EMA5) < lag(EMA8) & EMA5 > EMA8 ~ 'BUY',
+    lag(EMA5) >= lag(EMA8) & EMA5 < EMA8 ~ 'SELL',
+    lag(EMA5) < lag(EMA8) & EMA5 <= EMA8 ~ 'HOLD',
+    lag(EMA5) >= lag(EMA8) & EMA5 >= EMA8 ~ 'HOLD')) %>%
+  mutate(tsignal6b = case_when(
+    lag(EMA8) < lag(EMA13) & EMA8 > EMA13 ~ 'BUY',
+    lag(EMA8) >= lag(EMA13) & EMA8 < EMA13 ~ 'SELL',
+    lag(EMA8) < lag(EMA13) & EMA8 <= EMA13 ~ 'HOLD',
+    lag(EMA8) >= lag(EMA13) & EMA8 >= EMA13 ~ 'HOLD'))
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# EMA Trading Signal 6: only when 6a & 6b are met simultaneously
+# EMA Rule setup and Generate Signals 
+mega7data_modified <- 
+  mega7data_modified %>%
+  mutate(tsignal6 = case_when(
+    tsignal6a == 'BUY' & tsignal6b == 'BUY' ~ 'BUY',
+    tsignal6a == 'BUY' & tsignal6b == 'SELL' ~ 'HOLD',
+    tsignal6a == 'BUY' & tsignal6b == 'HOLD' ~ 'HOLD',
+    tsignal6a == 'HOLD' & tsignal6b == 'HOLD' ~ 'HOLD',
+    tsignal6a == 'HOLD' & tsignal6b == 'BUY' ~ 'HOLD',
+    tsignal6a == 'HOLD' & tsignal6b == 'SELL' ~ 'HOLD',
+    tsignal6a == 'SELL' & tsignal6b == 'BUY' ~ 'HOLD',
+    tsignal6a == 'SELL' & tsignal6b == 'SELL' ~ 'SELL',
+    tsignal6a == 'SELL' & tsignal6b == 'HOLD' ~ 'HOLD')) 
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.pos='H'}
+# Show TSLA signals results (EMA)
+result_232b <-
+  mega7data_modified %>%
+  slice(which(symbol == "TSLA")) %>%
+  ungroup() %>%
+  select(date, adjusted,tsignal4, tsignal5, 
+         tsignal6, tsignal6a, tsignal6b) %>%
+  tail(8)
+```  
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.pos='H'}
+# Display TSLA output (EMA signals)
+kbl(result_232b, booktabs = T, linesep = "", longtable = T,
+    digits = 1, caption = "EMA Trading Signals (TSLA.US)", 
+    format.args = list(big.mark = ",", scientific = FALSE),
+    col.names = c("Date","Adj Close","tsignal4","tsignal5",
+                  "tsignal6","tsignal6a","tsignal6b")) %>%
+  kable_styling(latex_options = c("striped", "scale_up",
+                                  "HOLD_position"),
+                full_width = F) %>%
+  column_spec(c(3:5), bold = T) %>%
+  column_spec(1, width = "1.9cm") %>%
+  footnote(general = "Output 2.3.2.b: Last 8 rows are shown.",
+  number = "Includes tsignal4, tsignal5, tsignal6, tsignal6a and tsignal6b.")
+```
+
+As previously defined, technical analysis is the recording of the actual trading history, to identify potential patterns/trends with the assumption that similiar behavior will repeat in the future. A **technical indicator** is basically a mathematical representation and manipulation of the basic historical raw trading data and statistics of an asset. 
+
+The following in $\S 2.3$ exhibits the computation results, graphs/charts, and generated trading signals based on subjectively set parameters for each of the **12** technical indicators. Whether one tech indicator is effective is evaluated in $\S 2.4$. Model simulation for a portfolio constructed of the selected stocks will be performed and analyzed in $\S 3.1$. 
+
+Note: For all technical indicators utilized for this stock selection strategy, only the traditional (type of) technical analysis was applied; and there were no Machine Learning or AI enhanced directly for any indicators, nor any ML-driven evaluation processes included in selecting the significant indicators (in $\S 2.4$). 
+
+* For example: the **RSI** is the one of the most widely used trading indicators to detect potential oversold and overbought signals. As one of the classical trading tools, **RSI** has its defects. **RSI** tends of under or over react in sudden market shifts. Nowadays, quant analysts and traders often utilizes the LSTM (Long short-term memory) framework, one of the RNN (Recurrent Neural Network) Deep Learning Models to enhance the **RSI** performance, and applies Bayesian Optimization on the parameter settings.   
+
+翻译. 
+
+Starting at over 5,600+ stocks listed on NYSE and NASDAQ, and with eliminations by the **subjective indicators**, about **xx** U.S. stocks are input for technical indicators to filter and further model processes. 
+
+In general, the program is set to perform computations and generate tradings signals accordingly for each input stock; without occupying the majority of report spaces, all outputs (computation summaries/tables, charts/graphs) are therefore suppressed (A warning like below is provided for each suppressed output). For each model step, the report only shows the program output for Tesla, Inc. (`TSLA.US`); the same applies for the remaining of the report. Analysts may construct a web ui database program, so the PMs and analysts are able to check the indicator valuations, and their graphs or charts for the most up-to-date selection of stocks.    
+
+
+<Insert a chart with all indicators (sig or not sig) and character them as type of indicators mom volume etc>
+
+翻译. 
+
+### \textcolor{blue}{Technical Indicator 1: Simple Moving Avaerage (SMA)}  
+
+(Includes `tsignal1`, `tsignal2`, and `tsignal3`)  
+
+翻译
+
+* Intro- SMA: 
+
+Commonly, traders intend to observe the average stock prices of the last number of trading days, is often defined as the moving average price or the rolling average price. An n-day **simple moving average** price, or the **n-day SMA** price, which refers to the **arithmetic** average or the simple average of the stock prices (the model uses the *adjusted close* prices) for the past n consecutive trading days. The SMA lines tend to smooth out volatility or price variations, and makes the visualization of price trends more clear and intuitive.  
+
+Mathematically defined as:  
+
+$$\text{SMA}_t=\frac{P_t+...+P_{t-n+1}}{n}=\frac{\sum^{t}_{i=t-n+1}P_i}{n}$$
+
+The program uses the formula shown above to compute the **simple moving average (SMA)** values for **all stocks** in the model at various parameter settings, and creates appropriate related visualizations. Following, the **SMA** trading signals will be constructed. 
+
+翻译
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Define a function to compute the value for SMA using the adjusted close price with parameter settings of n days 
+
+SMA_comput <- function (price,n){
+  sma <- c()
+  sma[1:(n-1)] <- NA
+  for (i in n:length(price)){
+    sma[i] <- mean(price[(i-n+1):i])
+  }
+  sma <- reclass(sma,price)
+  return(sma) 
+}
+```  
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Compute SMA for all stocks, Full Data
+mega7data_modified <-
+  mega7data_modified %>%
+  group_by(symbol) %>%
+  mutate(SMA5 = SMA_comput(adjusted, 5), 
+         SMA8 = SMA_comput(adjusted,8),
+         SMA13 = SMA_comput(adjusted,13),
+         SMA20 = SMA_comput(adjusted,20),
+         SMA50 = SMA_comput(adjusted,50),
+         SMA200 = SMA_comput(adjusted,200))
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Alternative way: 
+# Below utilizes the `TTR` package directly for SMA computations: SMA()
+# TSLA <- xts(TSLA$adjusted,TSLA$date)
+# SMA200 <- SMA(TSLA,n = 200) 
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+result_231a <- 
+  mega7data_modified %>%
+  slice(which(symbol == "TSLA")) %>%
+  mutate(date = as.Date(date)) %>%
+  select(date, adjusted, SMA5, SMA8, SMA13, 
+         SMA20, SMA50, SMA200, volume)
+```
+
+\textcolor{red}{Individual stock outputs are suppressed, only TSLA.US related results are shown for illustration purposes.个股输出数据及图表已隐藏，报告仅展示特斯拉(TSLA.US)相关结果。} 
+
+*\textcolor{red}{Code Hidden 代码已隐藏}*  
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.pos='H'}
+# Display TSLA output (SMA values)
+kbl(tail(result_231a,10), booktabs = T, linesep = "", 
+    digits = 1, caption = "SMA Computations (TSLA.US)",
+    format.args = list(big.mark = ",", scientific = FALSE),
+    col.names = c("Symbol","Date","Adj Close","SM5","SMA8",
+                  "SMA13","SMA20","SMA50","SMA200","Volume")) %>%
+  kable_styling(latex_options = c("striped", "scale_down",
+                                  "HOLD_position"), 
+                position = "center") %>%
+  column_spec(c(4:9), bold = T) %>%
+  footnote(general = "Output 2.3.1.a: Last 10 rows are shown.")
+```
+
+The program computed the **SMA** values for all stocks input in the model, with the parameter settings of $n=5,8,13,20,50,200$. As an illustration, above table shows the computed SMA values (shown above) and line charts (shown below) for TSLA.US. 
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+TSLA_graph_SMA <- xts::last(result_231a,'365 days')
+TSLA_graph_SMA <- data.frame(TSLA_graph_SMA$adjusted,
+                             TSLA_graph_SMA$volume, TSLA_graph_SMA$date)
+# TSLA <- zoo(TSLA$TSLA.adjusted,TSLA$TSLA.date)
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+# GRAPH SUPRESEED
+chartSeries(TSLA_graph_SMA, subset = '2024-01-01::2024-02-23',
+            type = "bars",
+            theme=chartTheme('black'))
+
+# Add Modern 5-8-13 SMA strategy graph
+addSMA(n = 5,on = 1,col = "white")
+addSMA(n = 8,on = 1,col = "yellow") 
+addSMA(n = 13,on = 1,col = "purple") 
+# Adapts a new method in SMA graphs missing legends
+# knit works not run all chuncks
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+# GRAPH SUPRESEED
+chartSeries(TSLA_graph_SMA, subset = '2024-01-01::2024-02-23',
+            type = "bars",
+            theme=chartTheme('black'))
+# Add Classic 50-200 SMA strategy graph
+addSMA(n = 50,on = 1,col = "grey") 
+addSMA(n = 200,on = 1,col = "blue") 
+# Adapts a new method in SMA graphs missing legends
+# knit works not run all chunks
+```
+
+翻译
+
+* Trading signal(s) & strategies- **SMA**:  
+
+Normally, when a short-run **SMA** crosses from below to above a longer-run SMA is an indication to **BUY**. When a short-run **SMA** crosses from above to below a longer-run **SMA** is an indication to **SELL**. 
+
+- 1. SMA Trading Signal \#1: $\text{close price}>\text{SMA}(20)$ (Price relative to SMA) [`tsignal1`]
+
+When the most recent closing price (the model uses the *adjusted close* prices) is above its *SMA20* indicates a **BUY** signal, and vice versa for a **SELL** signal. We consider when $\text{close price}>\text{SMA}(20)$, the stock is trading at a strength relative to its recent (over a month) price history. 
+
+- 2. SMA Trading Signal \#2: $\text{SMA}(50)>\text{SMA}(200)$ (Hierarchical Moving Average Alignment) [`tsignal2`]
+
+Above mathematical expression is not completely accurate, where we believe when *SMA50* crosses from below to above a 200-day Simple Moving Average (*SMA200*) indicates the stock prices are stable and established an uptrend trend, i.e. a **BUY** signal, and vice versa. When the *SMA50* crosses from above to below a *SMA200* indicates a **SELL** signal. Note, this is one of the most classical **SMA** trading strategies, commonly refers to as the 'golden cross' and 'death cross'.  
+
+- 3. SMA Trading Signal \#3: $\text{SMA}(8)>\text{SMA}(13)$ & $\text{SMA}(5)>\text{SMA}(8)$ [`tsignal3`]
+
+Above mathematical expression is not completely accurate either, where we believe when *SMA8* crosses from below to above a 13-day Simple Moving Average (*SMA13*) indicates the stock prices are in an upward trend for the medium term. If concurrently, the *SMA5* crosses from below to above a *SMA8*, which indicates the stock prices are in an upward trend for the short-to-medium term; a **BUY** opportunity is signaled. 
+
+On the contrast, when the *SMA8* crosses from above to below a *SMA13*, while the *SMA5* crosses from above to below the *SMA8*, indicates a **SELL** signal for the short-to-medium term.  
+
+翻译
+
+To summarize for **SMA** trading signals:  
+
+While comparing *SMA50* and *SMA200* is the more classical and widely used parameter setting for the simple moving average (SMA) indicator, namely the golden and death cross. The less conventional, however modern and effective short-to-medium term trend indicator settings are the combinations of $n=5,8,13$. 
+
+- SMA- `tsignal1`:  
+**BUY**: $\text{close price}>\text{SMA}(20)$,  
+**HOLD or SELL**: $\text{close price}\leq \text{SMA}(20)$;  
+     
+- SMA- `tsignal2`:  
+**BUY**: $\text{SMA}(50)$ cross from **below to above** $\text{SMA}(200)$,  
+**SELL**: $\text{SMA}(50)$ cross from **above to below** $\text{SMA}(200)$;  
+     
+- SMA- `tsignal3`:   
+**BUY**: $\text{SMA}(8)$ cross from **below to above** a $\text{SMA}(13)$ **and** $\text{SMA}(5)$ cross from below to above a $\text{SMA}(8)$,   
+**SELL**: $\text{SMA}(8)$ cross from **above to below** a $\text{SMA}(13)$ **and** $\text{SMA}(5)$ cross from below to above a $\text{SMA}(8)$.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# SMA Trading Signal 1: Price > SMA20
+# SMA Rule setup and Generate Signals 
+mega7data_modified <-
+  mega7data_modified %>%
+  mutate(tsignal1 = case_when(SMA20 < adjusted ~ 'BUY',
+                              SMA20 >= adjusted ~ 'SELL'))
+# consider about HOLD
+# sigCrossover
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# SMA Trading Signal 2: SMA50 > SMA200
+# SMA Rule setup and Generate Signals 
+mega7data_modified <- 
+  mega7data_modified %>%
+  group_by(symbol) %>%
+  mutate(tsignal2 = case_when(
+    lag(SMA50) < lag(SMA200) & SMA50 > SMA200 ~ 'BUY',
+    lag(SMA50) >= lag(SMA200) & SMA50 < SMA200 ~ 'SELL',
+    lag(SMA50) < lag(SMA200) & SMA50 <= SMA200 ~ 'HOLD',
+    lag(SMA50) >= lag(SMA200) & SMA50 >= SMA200 ~ 'HOLD'))
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# SMA Trading Signal 3a: SMA5 > SMA8
+# SMA Trading Signal 3b: SMA8 > SMA13
+# SMA Rule setup and Generate Signals 
+mega7data_modified <- 
+  mega7data_modified %>%
+  group_by(symbol) %>%
+  mutate(tsignal3a = case_when(
+    lag(SMA5) < lag(SMA8) & SMA5 > SMA8 ~ 'BUY',
+    lag(SMA5) >= lag(SMA8) & SMA5 < SMA8 ~ 'SELL',
+    lag(SMA5) < lag(SMA8) & SMA5 <= SMA8 ~ 'HOLD',
+    lag(SMA5) >= lag(SMA8) & SMA5 >= SMA8 ~ 'HOLD')) %>%
+  mutate(tsignal3b = case_when(
+    lag(SMA8) < lag(SMA13) & SMA8 > SMA13 ~ 'BUY',
+    lag(SMA8) >= lag(SMA13) & SMA8 < SMA13 ~ 'SELL',
+    lag(SMA8) < lag(SMA13) & SMA8 <= SMA13 ~ 'HOLD',
+    lag(SMA8) >= lag(SMA13) & SMA8 >= SMA13 ~ 'HOLD'))
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# SMA Trading Signal 3: only when 3a & 3b are met simultaneously
+# SMA Rule setup and Generate Signals 
+mega7data_modified <- 
+  mega7data_modified %>%
+  mutate(tsignal3 = case_when(
+    tsignal3a == 'BUY' & tsignal3b == 'BUY' ~ 'BUY',
+    tsignal3a == 'BUY' & tsignal3b == 'SELL' ~ 'HOLD',
+    tsignal3a == 'BUY' & tsignal3b == 'HOLD' ~ 'HOLD',
+    tsignal3a == 'HOLD' & tsignal3b == 'HOLD' ~ 'HOLD',
+    tsignal3a == 'HOLD' & tsignal3b == 'BUY' ~ 'HOLD',
+    tsignal3a == 'HOLD' & tsignal3b == 'SELL' ~ 'HOLD',
+    tsignal3a == 'SELL' & tsignal3b == 'BUY' ~ 'HOLD',
+    tsignal3a == 'SELL' & tsignal3b == 'SELL' ~ 'SELL',
+    tsignal3a == 'SELL' & tsignal3b == 'HOLD' ~ 'HOLD')) 
+```
+
+\textcolor{red}{Individual stock outputs are suppressed, only TSLA.US related results are shown for illustration purposes.个股输出数据及图表已隐藏，报告仅展示特斯拉(TSLA.US)相关结果。} 
+
+*\textcolor{red}{Code Hidden 代码已隐藏}*  
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=TRUE}
+# Show TSLA signals results (SMA)
+result_231b <-
+  mega7data_modified %>%
+  slice(which(symbol == "TSLA")) %>%
+  ungroup() %>%
+  select(date, adjusted, tsignal1, tsignal2, 
+         tsignal3, tsignal3a, tsignal3b) %>%
+  tail(8)
+```
+
+* Summary- SMA:  
+
+The program is now constructed to generate **daily trading signals** indicates by the **simple moving average (SMA)**. The parameter settings and trading rules of the *SMA*-generated signals, which the model is currently applying are shown above. **Daily Trading signals** from the *SMA* indicators, include `tsignal1`, `tsignal2` and `tsignal3` (include `tsignal3a` and `tsignal3b`) for all stocks are generated, and the results for TSLA.US is shown below as an illustration.   
+
+$^*:$ Whether the *SMA* indicator, or the trading signals `tsignal1`, `tsignal2` and `tsignal3` are effective will be further analyzed by the program, and refer to $\S 2.4$ below for more details.  
+
+翻译
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.pos='H'}
+# Display TSLA output (SMA signals)
+kbl(result_231b, booktabs = T, linesep = "", longtable = T, 
+    digits = 1, caption = "SMA Trading Signals (TSLA.US)", 
+    format.args = list(big.mark = ",", scientific = FALSE),
+    col.names = c("Date","Adj Close","tsignal1","tsignal2",
+                  "tsignal3","tsignal3a","tsignal3b")) %>%
+  kable_styling(latex_options = c("striped", "scale_up",
+                                  "HOLD_position"),
+                full_width = F) %>%
+  column_spec(c(3:5), bold = T) %>%
+  column_spec(1, width = "1.9cm") %>%
+  footnote(general = "Output 2.3.1.b: Last 8 rows are shown.",
+  number = "Includes tsignal1, tsignal2, tsignal3, tsignal3a and tsignal3b.")
+```
+
+### \textcolor{blue}{Technical Indicator 2: Exponential Moving Average (EMA)}  
+  
+(Includes `tsignal4`, `tsignal5`, and `tsignal6`)  
+
+* Intro- **EMA**: 
+
+Similar to the Simple Moving Average (SMA) which tend to smooth out the price variations and the average prices are rolling by dropping the oldest data point and adding the latest one. An n-day **Exponential Moving Average (EMA)**, or the **n-day EMA** prices refers to the **exponential** average of the stock prices (the model uses the *adjusted close* prices) for the past n consecutive trading days. Different from the SMA, the **Exponential Moving Average (EMA)** use the smoothing factor $\beta$ to assign a weight to each data point, with more recent prices given greater weight because of the exponential decay formula (The weights can be calculated in various ways, such as linear or exponential). 
+
+Mathematically defined as:  
+ 
+$$\begin{aligned}
+\text{EMA}_t(P,n)&=\beta P_{t}+\beta(1-\beta)P_{t-1}+\beta(1-\beta)^{2}P_{t-2}+... \\
+&= \beta P_{t}+(1-\beta)\text{EMA}_{t-1}
+\end{aligned}$$   
+
+where the smoothing coefficient $\beta$ is usually defined as  
+
+$$\beta=\frac{2}{n+1} \in (0;1)$$
+
+The **EMA** uses the previous value of the EMA ($\text{EMA}_{t-1}$) in its calculation. This means the EMA includes all the price data within its current value. The smoothing coefficient ensures that the newest price data has the most impact on the Moving Average and the oldest prices data has only a minimal impact.
+
+The program uses the formula shown above to compute the **Exponential Moving Average (EMA)** values for each stock at various parameter settings, and creates appropriate related visualizations. Following, **EMA** trading signals will be constructed. 
+
+翻译
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Define a function to compute the value for EMA using the adjusted close price with parameter settings of n days 
+
+EMA_comput <- function (price,n){
+  ema <- c()
+  ema[1:(n-1)] <- NA
+  ema[n]<- mean(price[1:n])
+  beta <- 2/(n+1)
+  for (i in (n+1):length(price)){
+    ema[i]<-beta * price[i] + 
+      (1-beta) * ema[i-1]
+  }
+  ema <- reclass(ema,price)
+  return(ema)
+}
+```  
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Compute SMA for all stocks, Full Data
+mega7data_modified <-
+  mega7data_modified %>%
+  group_by(symbol) %>%
+  mutate(EMA5 = EMA_comput(adjusted, 5), 
+         EMA8 = EMA_comput(adjusted,8),
+         EMA13 = EMA_comput(adjusted,13),
+         EMA20 = EMA_comput(adjusted,20),
+         EMA50 = EMA_comput(adjusted,50),
+         EMA200 = EMA_comput(adjusted,200))
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Alternative way: 
+# Below utilizes the `TTR` package directly for EMA computations: EMA()
+# TSLA <- xts(TSLA_graph_SMA$adjusted,TSLA_graph_SMA$date)
+# EMA200 <- EMA(TSLA,n = 200) 
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+TSLA_graph_EMA <- 
+  mega7data_modified %>%
+  slice(which(symbol == "TSLA")) %>%
+  mutate(date = as.Date(date)) %>%
+  select(date, adjusted, EMA5, EMA8, EMA13, 
+         EMA20, EMA50, EMA200, volume)
+```
+
+\textcolor{red}{Individual stock outputs suppressed, only TSLA.US related results shown for illustration purpose.个股输出数据及图表已隐藏，报告仅展示特斯拉(TSLA.US)相关结果。} 
+
+*\textcolor{red}{Code Hidden 代码已隐藏}*  
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.pos='H'}
+# Display TSLA output (EMA values)
+kbl(tail(TSLA_graph_EMA,10), booktabs = T, linesep = "", 
+    digits = 1, caption = "EMA Computations (TSLA.US)", 
+    format.args = list(big.mark = ",", scientific = FALSE),
+    col.names = c("Symbol","Date","Adj Close","EM5","EMA8",
+                  "EMA13","EMA20","EMA50","EMA200","Volume")) %>%
+  kable_styling(latex_options = c("striped", "scale_down",
+                                  "HOLD_position"), 
+                position = "center") %>%
+  column_spec(c(4:9), bold = T) %>%
+  footnote(general = "Output 2.3.2.a: Last 10 rows are shown.")
+```
+
+The program computed the **EMA** values for all stocks input in the model, with the parameter settings of $n=5,8,13,20,50,200$. As an illustration, above table shows the computed EMA values (shown above) and line charts (shown below) for TSLA.US. 
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+TSLA_graph_EMA <- xts::last(TSLA_graph_EMA,'365 days')
+TSLA_graph_EMA <- data.frame(TSLA_graph_EMA$adjusted,
+                             TSLA_graph_EMA$volume, TSLA_graph_EMA$date)
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+# GRAPH SUPRESEED
+chartSeries(TSLA_graph_EMA, subset = '2024-01-01::2024-02-23',
+            type = "bars",
+            theme=chartTheme('black'))
+
+# Add Modern 5-8-13 EMA strategy graph
+addEMA(n = 5,on = 1,col = "white")
+addEMA(n = 8,on = 1,col = "yellow") 
+addEMA(n = 13,on = 1,col = "purple") 
+# Adapts a new method in EMA graphs missing legends
+# knit works not run all chuncks
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+# GRAPH SUPRESEED
+chartSeries(TSLA_graph_EMA, subset = '2024-01-01::2024-02-23',
+            type = "bars",
+            theme=chartTheme('black'))
+# Add Classic 50-200 EMA strategy graph
+addEMA(n = 50,on = 1,col = "grey") 
+addEMA(n = 200,on = 1,col = "blue") 
+# Adapts a new method in EMA graphs missing legends
+# knit works not run all chunks
+```
+
+翻译
+
+* Trading signal(s) & strategies- **EMA**:  
+
+Normally, when the **EMA** rises and prices dip near or just below the EMA, it signals a buying opportunity. When the EMA falls and prices rally towards or just above the EMA, it signals a selling opportunity. 
+
+Therefore, when a short-run **EMA** crosses from below to above a longer-run EMA is an indication to **BUY**. When a short-run **EMA** crosses from above to below a longer-run **EMA** is an indication to **SELL**.  
+
+Moving averages are effective in signaling the 'support and resistance areas'. Since the **EMA** is generally more sensitive to price movements than the **SMA**, and is able to identify trends earlier than an **SMA** would; the **EMA** values and resulted trading signals become more valuable in understanding near-term price movements and the 'support and resistance areas'. A rising EMA tends to support the price actions, while a falling EMA tends to provide resistance to price actions. This reinforces the strategy of buying when the price is near the rising EMA and selling when the price is near the falling EMA.  
+
+翻译
+
+- 1. EMA Trading Signal \#1: $\text{close price}>\text{EMA}(20)$ (Price relative to EMA) [`tsignal4`]
+
+When the most recent closing price (the model uses the *adjusted close* prices) is above its *EMA20* indicates a **BUY** signal, and vice versa for a **SELL** signal. We consider when $\text{close price}>\text{SMA}(20)$, the stock is trading at a strength relative to its recent (over a month) price history. 
+
+- 2. EMA Trading Signal \#2: $\text{EMA}(50)>\text{EMA}(200)$ (Hierarchical Moving Average Alignment) [`tsignal5`]
+
+Above mathematical expression is not completely accurate, where we believe when *EMA50* crosses from below to above a 200-day Exponential Moving Average (*EMA200*) indicates the stock prices are stable and established an uptrend trend, i.e. a **BUY** signal, and vice versa. When the *EMA50* crosses from above to below a *EMA200* indicates a **SELL** signal. Note, this is the **EMA** version of the most classical **SMA** trading strategies, commonly refers to as the 'golden cross' and 'death cross'.  
+
+- 3. EMA Trading Signal \#3: $\text{EMA}(8)>\text{EMA}(13)$ & $\text{EMA}(5)>\text{EMA}(8)$ [`tsignal6`]
+
+Above mathematical expression is not completely accurate either, where we believe when *EMA8* crosses from below to above a 13-day Exponential Moving Average (*EMA13*) indicates the stock prices are in an upward trend for the medium term. If concurrently, the *EMA5* crosses from below to above a *EMA8*, which indicates the stock prices are in an upward trend for the short-to-medium term; a **BUY** opportunity is signaled.  
+
+On the contrast, when the *EMA8* crosses from above to below an *EMA13*, while the *EMA5* crosses from above to below the *EMA8*, indicates a **SELL** signal for the short-to-medium term.  
+
+Compare to the **SMA** version, this set of trading signals are more sensitive, as the **EMA** bears more weight on the more recent price variations, and the newest price data has the most impact. 
+
+翻译
+
+To summarize for **EMA** trading signals:  
+
+- EMA- `tsignal4`:  
+**BUY**: $\text{close price}>\text{EMA}(20)$,  
+**HOLD or SELL**: $\text{close price}\leq \text{EMA}(20)$;  
+     
+- EMA- `tsignal5`:  
+**BUY**: $\text{EMA}(50)$ cross from **below to above** $\text{EMA}(200)$,  
+**SELL**: $\text{EMA}(50)$ cross from **above to below** $\text{EMA}(200)$;  
+     
+- EMA- `tsignal6`:   
+**BUY**: $\text{EMA}(8)$ cross from **below to above** a $\text{EMA}(13)$ **and** $\text{EMA}(5)$ cross from below to above a $\text{EMA}(8)$,   
+**SELL**: $\text{EMA}(8)$ cross from **above to below** a $\text{EMA}(13)$ **and** $\text{EMA}(5)$ cross from below to above a $\text{EMA}(8)$  
+
+翻译
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# EMA Trading Signal 4: Price > EMA20
+# EMA Rule setup and Generate Signals 
+mega7data_modified <-
+  mega7data_modified %>%
+  mutate(tsignal4 = case_when(EMA20 < adjusted ~ 'BUY',
+                              EMA20 >= adjusted ~ 'SELL'))
+# consider about HOLD
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# EMA Trading Signal 5: EMA50 > EMA200
+# EMA Rule setup and Generate Signals 
+mega7data_modified <- 
+  mega7data_modified %>%
+  group_by(symbol) %>%
+  mutate(tsignal5 = case_when(
+    lag(EMA50) < lag(EMA200) & EMA50 > EMA200 ~ 'BUY',
+    lag(EMA50) >= lag(EMA200) & EMA50 < EMA200 ~ 'SELL',
+    lag(EMA50) < lag(EMA200) & EMA50 <= EMA200 ~ 'HOLD',
+    lag(EMA50) >= lag(EMA200) & EMA50 >= EMA200 ~ 'HOLD'))
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# EMA Trading Signal 6a: EMA5 > EMA8
+# EMA Trading Signal 6b: EMA8 > EMA13
+# EMA Rule setup and Generate Signals 
+mega7data_modified <- 
+  mega7data_modified %>%
+  group_by(symbol) %>%
+  mutate(tsignal6a = case_when(
+    lag(EMA5) < lag(EMA8) & EMA5 > EMA8 ~ 'BUY',
+    lag(EMA5) >= lag(EMA8) & EMA5 < EMA8 ~ 'SELL',
+    lag(EMA5) < lag(EMA8) & EMA5 <= EMA8 ~ 'HOLD',
+    lag(EMA5) >= lag(EMA8) & EMA5 >= EMA8 ~ 'HOLD')) %>%
+  mutate(tsignal6b = case_when(
+    lag(EMA8) < lag(EMA13) & EMA8 > EMA13 ~ 'BUY',
+    lag(EMA8) >= lag(EMA13) & EMA8 < EMA13 ~ 'SELL',
+    lag(EMA8) < lag(EMA13) & EMA8 <= EMA13 ~ 'HOLD',
+    lag(EMA8) >= lag(EMA13) & EMA8 >= EMA13 ~ 'HOLD'))
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# EMA Trading Signal 6: only when 6a & 6b are met simultaneously
+# EMA Rule setup and Generate Signals 
+mega7data_modified <- 
+  mega7data_modified %>%
+  mutate(tsignal6 = case_when(
+    tsignal6a == 'BUY' & tsignal6b == 'BUY' ~ 'BUY',
+    tsignal6a == 'BUY' & tsignal6b == 'SELL' ~ 'HOLD',
+    tsignal6a == 'BUY' & tsignal6b == 'HOLD' ~ 'HOLD',
+    tsignal6a == 'HOLD' & tsignal6b == 'HOLD' ~ 'HOLD',
+    tsignal6a == 'HOLD' & tsignal6b == 'BUY' ~ 'HOLD',
+    tsignal6a == 'HOLD' & tsignal6b == 'SELL' ~ 'HOLD',
+    tsignal6a == 'SELL' & tsignal6b == 'BUY' ~ 'HOLD',
+    tsignal6a == 'SELL' & tsignal6b == 'SELL' ~ 'SELL',
+    tsignal6a == 'SELL' & tsignal6b == 'HOLD' ~ 'HOLD')) 
+```
+
+\textcolor{red}{Individual stock outputs suppressed, only TSLA.US related results shown for illustration purpose.个股输出数据及图表已隐藏，报告仅展示特斯拉(TSLA.US)相关结果。} 
+
+*\textcolor{red}{Code Hidden 代码已隐藏}*  
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.pos='H'}
+# Show TSLA signals results (EMA)
+result_232b <-
+  mega7data_modified %>%
+  slice(which(symbol == "TSLA")) %>%
+  ungroup() %>%
+  select(date, adjusted,tsignal4, tsignal5, 
+         tsignal6, tsignal6a, tsignal6b) %>%
+  tail(8)
+```  
+
+&nbsp;  
+&nbsp;  
+
+  
+  
+  
+* Summary- **EMA**:  
+
+The model uses the same set of trading signal rules or indicator parameter settings apply to the **SMA** when interpreting the **EMA**. However, the **EMA** is generally more sensitive to price movements. On one side, it can  signal the trends earlier than an **SMA** would. On the other side, the **EMA** will likely to exhibit more short-term changes (price fluctuations) than a corresponding **SMA**.
+
+All moving averages, including both the **SMA** and the **EMA**; they are not designed to identify the exact bottom and top (of the price levels). By utilizing the moving averages, the model intends to observe the general direction of a trend (up, sideways/congested, down), but the analysts are aware a delay at the entry and exit points may exist from the moving averages. Most importantly, the **EMA** has a shorter delay than the **SMA** with the same parameter settings.  
+
+翻译
+
+Besides the **SMA** and the **EMA**, there are many other commonly used moving averages such as the **Weighted Moving Average (WMA)**, the **Double Exponential Moving Average (DEMA)**, the **Triple Exponential Moving Average (TEMA)**, and etc. Most of them tend to smooth the price movements, so the technical indicator/trading signal is less sensitive to the short-term fluctuations. However, per our investment needs in identify intra-day, short-term and longer-term equity investment opportunities, the model will therefore adhere to the simple and exponential moving averages.  
+
+The program is now constructed to generate **daily trading signals** indicates by the **Exponential Moving Average (EMA)**. The parameter settings and trading rules of the *EMA*-generated signals, which the model is currently applying are shown above. **Daily Trading signals** from the *EMA* indicators, include `tsignal4`, `tsignal5` and `tsignal6` (include `tsignal6a` and `tsignal6b`) for all stocks are generated, and the results for TSLA.US is shown below as an illustration.   
+
+$^*:$ Whether the *EMA* indicator, or the trading signals `tsignal4`, `tsignal5` and `tsignal6` are effective will be further analyzed by the program, and refer to $\S 2.4$ below for more details.  
+
+翻译
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.pos='H'}
+# Display TSLA output (EMA signals)
+kbl(result_232b, booktabs = T, linesep = "", longtable = T,
+    digits = 1, caption = "EMA Trading Signals (TSLA.US)", 
+    format.args = list(big.mark = ",", scientific = FALSE),
+    col.names = c("Date","Adj Close","tsignal4","tsignal5",
+                  "tsignal6","tsignal6a","tsignal6b")) %>%
+  kable_styling(latex_options = c("striped", "scale_up",
+                                  "HOLD_position"),
+                full_width = F) %>%
+  column_spec(c(3:5), bold = T) %>%
+  column_spec(1, width = "1.9cm") %>%
+  footnote(general = "Output 2.3.2.b: Last 8 rows are shown.",
+  number = "Includes tsignal4, tsignal5, tsignal6, tsignal6a and tsignal6b.")
+```
+
+
+### \textcolor{blue}{Technical Indicator 3: Moving Average Convergence Divergence (MACD)}    
+
+
+
+### \textcolor{blue}{Technical Indicator 4: Relative Strength Index (RSI)}  
+
+The RSI (Relative Strength Index) is a momentum oscillator that measures the speed and change of price movements.
+It ranges from 0 to 100 and is used to identify overbought or oversold conditions in a market.
+An RSI level below 30 generates buy signals while an RSI level above 70 generates sell signals.
+
+Note: The exclusion of machine learning.
+Technical.
+Example RSI Fundamental example ICIR to dig significant momentum factors.  
+
+
+
+```{r test1}
+
+#
+```
+
+```{r test2}
+#
+```
+
+```{r test3}
+#
+```
+
+### \textcolor{blue}{Technical Indicator 5: Bollinger Band (BB)} 
+
+
+### \textcolor{blue}{Technical Indicator 6: 2-day Momentum (2-day Mom)}  
+
+### \textcolor{blue}{Technical Indicator 7: Price Volume Trend (PVT)} 
+
+& nbsp; & nbsp;
+
+### Volume
+
+One of the most common basic indicators traders examine is the trading volume.
+Trading volume is an indication for the ‘activeness’ of a financial instrument.
+Depending on the financial instruments, trading volume can be measured either using the number of stocks traded or number of contracts with changed ownerships.
+
+### Price
+
+To put this in practice, if an increase in volume is observed with a steady increase in price, the instrument can be viewed as steady and strong.
+However, if volume and price are changing in different directions, a reversal might be happened.
+
+-   In terms of trading price, traders often observed the trends based on the charts shape and cross in ways that form shapes - often times with weird names like ‘head and shoulder’, ’ reverse head and sholder’, ‘double top’, ‘golden cross’, etc. A golden cross indicates a long term bull market going forward, whereas the death cross is the exact opposite, indicating a potential long term bear market. Both of these refer to the confirmation of long term trend by the occurance of the overlapping of moving average lines as shown below.
+
+```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+
+stocklist <- c("AAPL","GOOG","MSFT","NVDA","WMT","XOM")
+getSymbols(stocklist)
+AAPL <- last(AAPL,'3 years')
+head(AAPL)
+# https://www.r-bloggers.com/2016/10/quantitative-stock-analysis-tutorial-screening-the-returns-for-every-sampp500-stock-in-less-than-5-minutes/amp/
+```
+
+
+
+
+
+
+

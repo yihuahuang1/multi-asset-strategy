@@ -5,6 +5,6 @@ language:
 rmd_files: [
   "Investment Strategy Outlook 投资策略及模型规划.Rmd",
   "Base Model Construction 基础模型搭建.Rmd",
-  "write.Rmd"]
+  "Technical Indicators Construction 技术指标搭建.Rmd"]
 delete_merged_file: true 
 output_dir: "docs"

@@ -52,6 +52,8 @@
 <link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
 <link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
 
 
@@ -82,6 +84,7 @@
 <ul>
 <li class="chapter" data-level="1.1" data-path=""><a href="#research-objectives-研究目标"><i class="fa fa-check"></i><b>1.1</b> Research Objectives 研究目标</a></li>
 <li class="chapter" data-level="1.2" data-path=""><a href="#considerations-on-investment-strategy-投资策略的思考"><i class="fa fa-check"></i><b>1.2</b> Considerations on Investment Strategy 投资策略的思考</a></li>
+<li class="chapter" data-level="1.3" data-path=""><a href="#considerations-on-model-designs-模型设计的思考"><i class="fa fa-check"></i><b>1.3</b> Considerations on Model Designs 模型设计的思考</a></li>
 </ul></li>
 <li class="divider"></li>
 <li><a href="https://bookdown.org" target="blank">Published with bookdown</a></li>
@@ -151,7 +154,156 @@ History will repeat itself (Example: momentum trading strategy and mean reversio
 <p>With the research goal in building a portfolio with maximum long-term risk-adjusted returns while controlling the maximum drawdown, we certainly need to invest in a pool stocks with the largest winning probability in gaining positive investment returns and with the least amount of volatility.</p>
 <p>By acknowledging the usefulness and limitations of fundamental and technical analysis, we can design a quantitative model based on these analytically methodologies to build a portfolio which best suit our preset investment goals and risk preferences.</p>
 <p>翻译</p>
-<hr />
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;border-bottom: 0;">
+<caption>
+<span id="tab:unnamed-chunk-3">Table 1.1: </span>EMA Trading Signals (TSLA.US)
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+a
+</th>
+<th style="text-align:left;">
+b
+</th>
+<th style="text-align:left;">
+c
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+</td>
+<td style="text-align:left;font-weight: bold;">
+成交量类因子
+(Volume Factor)
+</td>
+<td style="text-align:left;">
+Accumulation/Distribution Oscillator (ADOSC); Chaikin Money Flow (CMF); Price Volume Trend (PVT); On-Balance Volume (OBV); Archer On-Balance Volume (AOBV); Elder’s Force Index (EFI); Ease of Movement (EOM); Money Flow Index (MFI); Positive Volume Index (PVI); Negative Volume Index (NVI); Price-Volume (PVOL); Price Volume Rank (PVR); Volume Profile (VP); etc.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+</td>
+<td style="text-align:left;font-weight: bold;">
+动量类因子
+(Momentum Factor)
+</td>
+<td style="text-align:left;">
+Rate of Change (ROC); Awesome Oscillator (AO); Absolute Price Oscillator (APO); Bias (BIAS); Balance of Power (BOP); Commodity Channel Index (CCI); Chanda Forecast Oscillator (CFO); Center of Gravity (CG); Correlation Trend Indicator (CTI); Efficiency Ratio (ER); Elder Ray Index (ERI); Moving Average Convergence Divergence (MACD); Stochastic Oscillator (KDJ); Inertia; Relative Strength Index (RSI); Relative Strength Xtra (RSX); n-day Momentum (MOM); Psychological Line (PSL); Slope; Stochastic Momentum Index Ergodic Indicator (SMI Ergodic Indicator); Squeeze (SQZ); Squeeze Pro (SQZPRO); Stochastic Relative Strength Index (STOCHRSI); Triple Exponentially Smoothed Moving Average (TRIX); True Strength Index (TSI); etc.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+</td>
+<td style="text-align:left;font-weight: bold;">
+趋势类因子
+(Trend Factor)
+</td>
+<td style="text-align:left;">
+Average Directional Movement Index (ADX); Archer Moving Averages Trends (AMAT); Choppiness Index (CHOP); Decay; Increasing/Decreasing; Detrend Price Oscillator (DPO); Long run/Short run; Q Stick (qstick); TTM Trend; Vortex (Vortex Indicator); and etc.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+</td>
+<td style="text-align:left;font-weight: bold;">
+波动性类因子
+(Volatility Factor)
+</td>
+<td style="text-align:left;">
+Historical Volatility (HV); Implied Volatility (IV); beta (<span class="math inline">\(\beta\)</span>); Aberration; True Range (TR); Average True Range (ATR); Bollinger Bands (BBands); Mass Index (massi); Relative Volatility Index (RVI); Acceleration Bands (accbands); Elder’s Thermometer (thermos); Ulcer Index (ui); etc.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Fundamental Indicators (基本面指标)
+</td>
+<td style="text-align:left;font-weight: bold;">
+基本面类因子 (经营效率，盈利能力，成长性和估值，现金流，财务质量)
+(Fundamental Factor)
+</td>
+<td style="text-align:left;">
+Asset Turnover Ratio (ATR); Inventory Turnover Ratio (ITR); Account Receivable Turnover Ratio (ARTR); Long-term Asset Turnover Ratio (LATR), Short-term (Operating) Asset Turnover Ratio (SATR); EV/EBITDA; EV/Sales; Free Cash Flow Yield (FCF Yield); Price/Earnings Ratio (PE); Price/Book Ratio (PB); Price/Sales (PS); Return on Assets (ROA); Return on Equity (ROE); Return on Invested Capital (ROIC); Dividend Yield; Gross Margin Ratio (GMR); Operating Profit Margin Ratio (OMR); Net Profit/EBIT Margin Ratio (NPR); EBITDA Margin Ratio; Weighted Average Cost of Capital (WACC); Economic Profit (ROIC-WACC); and etc.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+</td>
+<td style="text-align:left;font-weight: bold;">
+风格因子
+(Other Style Factor)
+</td>
+<td style="text-align:left;">
+Size; Dividend; Sentiment; etc.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Portfolio Indicators (组合类指标)
+</td>
+<td style="text-align:left;font-weight: bold;">
+投资策略因子
+(Strategy &amp; Portfolio Factor)
+</td>
+<td style="text-align:left;">
+Information Ratio; Maximum Drawdown (MDD); etc.
+</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<span style="font-style: italic;">Note: </span>
+</td>
+</tr>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<sup></sup> Output 2.3.2.b: Last 8 rows are shown.
+</td>
+</tr>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<sup>1</sup> Includes tsignal4, tsignal5, tsignal6, tsignal6a and tsignal6b.
+</td>
+</tr>
+</tfoot>
+</table>
+</div>
+<div id="considerations-on-model-designs-模型设计的思考" class="section level2 hasAnchor" number="1.3">
+<h2><span class="header-section-number">1.3</span> Considerations on Model Designs 模型设计的思考<a href="#considerations-on-model-designs-模型设计的思考" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>In achieving the ultimate investment goal of building a ‘high-return and low-risk’ stock-only portfolio, we are aiming to build a quantitative model with the most effective components.</p>
+<p>There are countless relative metrics and factors evaluating an asset or a firm, whether the particular indicator/factor is <strong>significant</strong> to the price movements is a question in much more depth.</p>
+<p>翻译</p>
+<p>To have ‘meaningful’ model components, we will divide and concur the research objectives by first selecting stocks with near-term investment opportunities (the <code>base model</code>).
+Following, we will then filter the selected list of stock more rigorously so the positive investment return are more ‘certain’ for the longer-term with minimal downside risk (the <code>full model</code>).</p>
+<p>In other words, the <code>base model</code> will input the <strong>significant</strong> technical indicators to select a list of ‘possible winning’ U.S stocks (with potential investment opportunities).
+Following, the <code>complete model</code> (<em>Section 5</em>) will include the <strong>significant</strong> fundamental indicators/factors to further filter from the list of selected stocks, and keep the ones with ‘higher certainty’ of long-term risk-adjusted (investment) returns.</p>
+<p>翻译</p>
+<p>Besides selecting stocks based on appropriate and significant indicators/factors with the greatest investment return potentials, the model will also include <strong>subjective filters</strong> to suit specific investment needs/goals (example: able to buy and hold, hot areas of investment interest), risk preferences, and compliance requirements (example: invest in market cap <span class="math inline">\(&gt;\$7B\)</span>)。</p>
+<p>翻译 过滤条件是主观设定的，同时可以根据其他投资需求与风险偏好进行筛选。</p>
+<p>A <strong>technical indicator</strong> is basically a mathematical representation and manipulation of the basic raw trading data and statistics of an asset (e.g. adj close price, trading volume, 52-week high and low, etc.).
+In other words, a technical indicator is usually a derivation of the raw trading statistics and is designed to represent/signal certain market behavior.</p>
+<ul>
+<li>Traders typically view the technical indicators as tools on a trading chart to analyze the market trend in a clearer manner. In trading, a technical indicator is like a financial compass, which provides certain market behavior insights (overbought, oversold, potential reversal, range-bound, etc), so investment opportunities and risks can be identified more clearly and intuitively. Traders and PMs can utilize a combination of technical indicators to make informed real-time trading decisions with more confidence.</li>
+</ul>
+<p><strong>here</strong></p>
+<p>One of the ultimate goals in any type of security analysis is to understand/predict the ‘direction’ of the asset’s future price movements.
+There are various technical indicators that traders use to predict/deduce future price levels (<em>Section 2.2</em>).</p>
+<ul>
+<li><p>One of the common technical trading strategies is momentum trading, which is also the core assumptions we made in building the stock selection model. A stock that has been rising is said to have positive momentum while a stock that has been crashing is said to have negative momentum. Momentum is an investing factor that aims to benefit from the ongoing trend of a stock or asset.</p></li>
+<li><p>Momentum trading centers on buying and selling assets following their recent performance trends. Traders using this strategy believe that assets moving strongly in a direction will continue to do so. They aim to capitalize on this momentum before it fades.</p></li>
+</ul>
+<p>*Trend followers believe that stocks moving up or down will continue on that path.</p>
+<p>In contrast, mean reversion suggests that assets overreact and will eventually return to their mean values.Momentum trading thrives in markets exhibiting strong trends.
+It’s less effective in sideways or highly volatile markets.
+Therefore, identifying the right market conditions is critical for success.
+Sudden market reversals can quickly erode gains.
+Hence, effective risk management is essential.</p>
+<p>Technical Indicators do not follow a general pattern, meaning, they behave differently with every security.
+What can be a good indicator for a particular security, might not hold the case for the other.
+Thus, using a technical indicator requires jurisprudence coupled with good experience.</p>
 </div>
 </div>
             </section>
