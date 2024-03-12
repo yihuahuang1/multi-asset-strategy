@@ -7,3 +7,6 @@ turn-bookdown-tutorial-into-awesome-book
 publish-awesome-book
 moving-forward
 write
+investment-strategy-outlook-投资策略及模型规划
+research-objectives-研究目标
+considerations-on-investment-strategy-投资策略的思考

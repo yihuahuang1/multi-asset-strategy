@@ -1,33 +1,85 @@
 --- 
-title: "Making free books with RStudio’s RMarkdown & Bookdown"
-author: "Julie Lowndes"
+title: "&emsp; Price/Volume Stock Selection Strategy &emsp; &emsp; &emsp; &emsp;Using Quantitative Models &emsp; &emsp; &emsp; &emsp; 量价选股策略模型"
+subtitle: "Base Model: a Technical Signaling Tool for Stock Selection &emsp; &emsp; &emsp; 基础模型：技术指标选股工具"
+author: "Albert Huang"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 # output: bookdown::gitbook
-documentclass: book
+documentclass: book, ctexart
 bibliography: [book.bib, packages.bib]
 biblio-style: apalike
 link-citations: yes
 github-repo: openscapes/series
+header-includes:
+  - \usepackage{draftwatermark}
+  - \usepackage{xcolor}
+  - \usepackage{siunitx}
+  - \newcolumntype{d}{S[table-format=3.2]}
+output:
+  rticles::ctex:
+    fig_caption: yes
+    number_sections: yes
+    toc: yes
+    toc_depth: 3
+editor_options: 
+  markdown: 
+    wrap: sentence
 description: "A mini bookdown tutorial book on how to make bookdown books."
 ---
+# Investment Strategy Outlook 投资策略及模型规划
 
-# Welcome {#welcome}
+## Research Objectives 研究目标
 
-hi
+For the purpose in discovering the potential U.S. equity investment opportunities, we are attempting to utilize a quantitative methodology based on a programming approach which adapts a price/volume or trend trading strategy by constructing a model using a combination of objective evaluation criteria, technical indicators, and fundamental factors.
 
-It's possible to create beautiful books for free using [RStudio's R Markdown](http://rmarkdown.rstudio.com/) and Yihui Xie's [bookdown](https://bookdown.org/yihui/bookdown/) and hosting them on [Github](http://github.com). This is pretty new and incredibly cool. It is a really powerful way to communicate science using the same reproducible workflow you use for your analyses and collaborations.
+翻译
 
-This tutorial borrows heavily from a lot of great tutorials and resources you should check out too -- there are links throughout. It also parallels a previous tutorial [Making free websites with RStudio’s R Markdown](https://jules32.github.io/rmarkdown-website-tutorial/).
+## Considerations on Investment Strategy 投资策略的思考
 
-The best way to learn is to follow along with your own laptop, but all are welcome. We'll spend half the time with the tutorial and half the time for you to work on your own website and get help. If you bring your laptop please do this beforehand: 
+The major investment goals are:
 
-1. install [RStudio](https://www.rstudio.com/products/rstudio/download/)
-1. create a [GitHub]((http://github.com)) account ([advice](http://happygitwithr.com/github-acct.html))
-1. set up your computer to talk to GitHub
-    - have RStudio linked directly (highly recommended) ([instructions sections 8-14](http://happygitwithr.com/hello-git.html))
-    - or install the [Desktop App](https://desktop.github.com/)
-    - or be familiar with git commands for the command line ([tutorial](https://try.github.io/levels/1/challenges/1))
+* Construct a stock-only portfolio with (appropriate) maximized expected upside returns in the long-run;
+
+* Construct the portfolio such overall and continuous downside risks are minimized.
+
+$\Rightarrow$ Investment Goal: Construct a (stock-only) portfolio with maximum long-term risk-adjusted returns while controlling the drawdown proactively.
+
+翻译
+
+In order to select a pool of U.S. stocks (from the major U.S. Indexes) which are in consistent with the preset investment goals & risk preferences, we consider the following trading perspectives:
+
+* In the world of trading, signals are **indicators** which are derived from various continuously changing statistics and variables, and guide the investors on trading directions (buy, sell, and hold).
+
+* Such signals or indicators help the traders and PMs becoming more informed and aware of the current market performance/conditions.
+
+翻译
+
+There are two major approaches to classify the indicators or to analyze any asset, i.e. technical analysis & fundamental analysis:
+
+* **Fundamental analysis** focuses on the performance of an asset by studying various factors/indicators, which may impact the asset price, such as the company's earnings, its cash flow statement and balance sheet, operating efficiency, corporate governance, sector outlook, macro trend, and etc.
+
+* Unlike the income statement modeling and industry/sector research conducted by the fundamental analysis, **technical analysis** aims to predict the future movements(patterns and trends) of certain indicators of an asset (mostly price and volume related); based soley on the historical/past characteristics of various technical indicators, which are (typically) displayed graphically in charts.
+
+翻译
+
+The core assumptions behind these two major methods are that:
+
+(1) The fundamental analysis approach uses information (directly or indirectly) related to the asset itself (e.g EBITDA of the firm), and assumes those information were already factored into the market price fluctuations in time (the EMH).
+    By identifying the historical patterns of these indicators or factors, and assuming they provide sufficient information in predicting the (future) trend, one can predict such indicator for the near future (e.g FY26E \$EPS).
+    Further, utilizing modern finance models like the CAPM and the multi-factor models with Machine Learning, future asset price movements can be predicted with more confidence (however, not necessarily accuracy).
+
+(2) the assumptions for the technical analysis approach are much simpler.
+    One believes that the historical up/down trend of a technical indicator will continue on that path or the path will reverse in the near-term future.
+    In other words, technical indicators like price and trading volume, are assumed to move in trends or counter trends, which are repetitive, with certain patterns reoccurring, i.e.
+    History will repeat itself (Example: momentum trading strategy and mean reversion strategy).
+
+翻译
+
+With the research goal in building a portfolio with maximum long-term risk-adjusted returns while controlling the maximum drawdown, we certainly need to invest in a pool stocks with the largest winning probability in gaining positive investment returns and with the least amount of volatility.
+
+By acknowledging the usefulness and limitations of fundamental and technical analysis, we can design a quantitative model based on these analytically methodologies to build a portfolio which best suit our preset investment goals and risk preferences.
+
+翻译  
 
 ----
 
