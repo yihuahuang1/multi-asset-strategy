@@ -31,8 +31,6 @@ description: "THIS IS THE DESCRIP PART on index."
 
 # INTRO ON GTAA  
 
-\@ref(2.1) for stock selection model
-
 `In Progress`
 
 ## GTAA SPECIFICIS

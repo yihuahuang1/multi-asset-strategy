@@ -4,6 +4,7 @@ language:
     chapter_name: "Chapter "
 rmd_files: [
   "index.Rmd",
+  "Table-of-Contents.Rmd",
   "Investment-Strategy-Outlook.Rmd",
   "Base-Model-Construction.Rmd",
   "Technical-Indicators-Construction.Rmd",
