@@ -14,15 +14,17 @@
 
 `In Progress`
 
-量价因子Price Volume Trend ($\text{PVT}$) 是一种技术分析(technical analysis)得出的指标，完全依据历史交易数据(solely based on historical trading price and volume)，其对未来的预测能力理论上是有限的，可以作为一种交易的/择时的信号判断方法，组合选股仍因依赖其他以基本面研究方式为基础的方法和模型 (macros, sector trends, factor models)。
+```{r eval=FALSE, include=FALSE}
+#量价因子Price Volume Trend ($\text{PVT}$) 是一种技术分析(technical analysis)得出的指标，完全依据历史交易数据(solely based on historical trading price and volume)，其对未来的预测能力理论上是有限的，可以作为一种交易的/择时的信号判断方法，组合选股仍因依赖其他以基本面研究方式为基础的方法和模型 (macros, sector trends, factor models)。
 
-Stocks with unusual price and/or volume movements will be filtered out based on subjectively-set criteria, certain positive investment opportunities may be omitted (as the model filtered them out) due to the fixed filter rules.
+#Stocks with unusual price and/or volume movements will be filtered out based on subjectively-set criteria, certain positive investment opportunities may be omitted (as the model filtered them out) due to the fixed filter rules.
 
-All the concepts explained here can be applied on any trading instrument (like stock, currency, options, indices or crypto).
+#All the concepts explained here can be applied on any trading instrument (like stock, currency, options, indices or crypto).
 arrow believe the model has almost no use for other asset classes
 
-因为模型的因子过滤是人为主观设定的，且为固定不可变动的过滤条件，一些由于股价或交易量显著异动的股票可能因此被模型剔除，由此可能会产生错失良好投资机遇的机会成本。
+#因为模型的因子过滤是人为主观设定的，且为固定不可变动的过滤条件，一些由于股价或交易量显著异动的股票可能因此被模型剔除，由此可能会产生错失良好投资机遇的机会成本。
 
-Machine Learning integration for prices prediction is possible however not reliable to depend trading decisions soley on price predictions.
+#Machine Learning integration for prices prediction is possible however not reliable to depend trading decisions soley on price predictions.
 
-fudamental is crucial it's theoretically possible that some/all technical or fundamental indicators fail under various market conditions  
+#fudamental is crucial it's theoretically possible that some/all technical or fundamental indicators fail under various market conditions  
+```

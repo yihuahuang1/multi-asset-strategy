@@ -1,0 +1,11 @@
+# Quantitative Model for other Assets 量化模型
+
+* FX  
+
+* Global Gov. Bonds  
+
+* ETFs
+
+
+
+TBD

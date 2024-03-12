@@ -5,3 +5,7 @@ TBD
 ## Intro on Full Model Design & Construction 完整量价选股模型搭建及设计
 
 TBD
+
+## Selecting Effective Fundamental Factors 选取有效的基本面因子
+
+TBD

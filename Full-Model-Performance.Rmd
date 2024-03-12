@@ -1,4 +1,4 @@
-# Price Volume Strategy Summary 策略模型总结
+# Fundamental Stock Selection Summary 基本面选股策略模型的总结
 
 TBD
 
@@ -15,5 +15,9 @@ TBD
 TBD
 
 ## Model & Strategy Drawbacks 模型和策略设计缺陷
+
+TBD
+
+## Consideration: Optimization Using Portfolio Performance Factors 利用组合因子优化选股模型
 
 TBD

@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 3 Technical Indicators Construction 技术指标搭建 | Price/Volume Stock Selection Strategy Using Quantitative Models 量价选股策略模型</title>
+  <title>Chapter 4 Technical Indicators Construction 技术指标搭建 | Multi-asset Investment strategy Using Quantitative Models 多资产策略量化模型</title>
   <meta name="description" content="THIS IS THE DESCRIP PART on index." />
   <meta name="generator" content="bookdown 0.38 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 3 Technical Indicators Construction 技术指标搭建 | Price/Volume Stock Selection Strategy Using Quantitative Models 量价选股策略模型" />
+  <meta property="og:title" content="Chapter 4 Technical Indicators Construction 技术指标搭建 | Multi-asset Investment strategy Using Quantitative Models 多资产策略量化模型" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="THIS IS THE DESCRIP PART on index." />
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 3 Technical Indicators Construction 技术指标搭建 | Price/Volume Stock Selection Strategy Using Quantitative Models 量价选股策略模型" />
+  <meta name="twitter:title" content="Chapter 4 Technical Indicators Construction 技术指标搭建 | Multi-asset Investment strategy Using Quantitative Models 多资产策略量化模型" />
   
   <meta name="twitter:description" content="THIS IS THE DESCRIP PART on index." />
   
@@ -31,7 +31,7 @@
   
   
 <link rel="prev" href="base-model-construction-基础模型搭建.html"/>
-
+<link rel="next" href="selecting-effective-technical-indicators-选取有效的技术指标.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -58,7 +58,7 @@
 
 <style type="text/css">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -141,40 +141,83 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <nav role="navigation">
 
 <ul class="summary">
-<li><a href="./">Multi-asset Portfolio Strategy</a></li>
+<li><a href="./">Multi-Asset Portfolio Strategy</a></li>
 
 <li class="divider"></li>
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> output: bookdown::gitbook</a>
 <ul>
-<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#research-objectives-研究目标"><i class="fa fa-check"></i><b>1.1</b> Research Objectives 研究目标</a></li>
-<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#considerations-on-investment-strategy-投资策略的思考"><i class="fa fa-check"></i><b>1.2</b> Considerations on Investment Strategy 投资策略的思考</a></li>
-<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#considerations-on-model-designs-模型设计的思考"><i class="fa fa-check"></i><b>1.3</b> Considerations on Model Designs 模型设计的思考</a></li>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#gtaa-specificis"><i class="fa fa-check"></i><b>1.1</b> GTAA SPECIFICIS</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#multiple-assets"><i class="fa fa-check"></i><b>1.2</b> MULTIPLE ASSETS</a></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#reserach"><i class="fa fa-check"></i><b>1.3</b> RESERACH</a></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="base-model-construction-基础模型搭建.html"><a href="base-model-construction-基础模型搭建.html"><i class="fa fa-check"></i><b>2</b> (Base) Model Construction 基础模型搭建</a>
+<li class="chapter" data-level="2" data-path="investment-strategy-outlook-投资策略及模型规划.html"><a href="investment-strategy-outlook-投资策略及模型规划.html"><i class="fa fa-check"></i><b>2</b> Investment Strategy Outlook 投资策略及模型规划</a>
 <ul>
-<li class="chapter" data-level="2.1" data-path="base-model-construction-基础模型搭建.html"><a href="base-model-construction-基础模型搭建.html#intro-on-base-model-design-and-construction-模型设计搭建概要"><i class="fa fa-check"></i><b>2.1</b> Intro on (Base) Model Design and Construction 模型设计搭建概要</a></li>
-<li class="chapter" data-level="2.2" data-path="base-model-construction-基础模型搭建.html"><a href="base-model-construction-基础模型搭建.html#portfolio-specific-subjective-indicators-其他组合相关过滤指标"><i class="fa fa-check"></i><b>2.2</b> Portfolio-specific Subjective Indicators 其他组合相关过滤指标</a>
+<li class="chapter" data-level="2.1" data-path="investment-strategy-outlook-投资策略及模型规划.html"><a href="investment-strategy-outlook-投资策略及模型规划.html#research-objectives-研究目标"><i class="fa fa-check"></i><b>2.1</b> Research Objectives 研究目标</a></li>
+<li class="chapter" data-level="2.2" data-path="investment-strategy-outlook-投资策略及模型规划.html"><a href="investment-strategy-outlook-投资策略及模型规划.html#considerations-on-investment-strategy-投资策略的思考"><i class="fa fa-check"></i><b>2.2</b> Considerations on Investment Strategy 投资策略的思考</a></li>
+<li class="chapter" data-level="2.3" data-path="investment-strategy-outlook-投资策略及模型规划.html"><a href="investment-strategy-outlook-投资策略及模型规划.html#considerations-on-model-designs-模型设计的思考"><i class="fa fa-check"></i><b>2.3</b> Considerations on Model Designs 模型设计的思考</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="base-model-construction-基础模型搭建.html"><a href="base-model-construction-基础模型搭建.html"><i class="fa fa-check"></i><b>3</b> (Base) Model Construction 基础模型搭建</a>
 <ul>
-<li class="chapter" data-level="2.2.1" data-path="base-model-construction-基础模型搭建.html"><a href="base-model-construction-基础模型搭建.html#section"><i class="fa fa-check"></i><b>2.2.1</b> </a></li>
-<li class="chapter" data-level="2.2.2" data-path="base-model-construction-基础模型搭建.html"><a href="base-model-construction-基础模型搭建.html#section-1"><i class="fa fa-check"></i><b>2.2.2</b> </a></li>
-<li class="chapter" data-level="2.2.3" data-path="base-model-construction-基础模型搭建.html"><a href="base-model-construction-基础模型搭建.html#section-2"><i class="fa fa-check"></i><b>2.2.3</b> </a></li>
-<li class="chapter" data-level="2.2.4" data-path="base-model-construction-基础模型搭建.html"><a href="base-model-construction-基础模型搭建.html#section-3"><i class="fa fa-check"></i><b>2.2.4</b> </a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="3" data-path="technical-indicators-construction-技术指标搭建.html"><a href="technical-indicators-construction-技术指标搭建.html"><i class="fa fa-check"></i><b>3</b> Technical Indicators Construction 技术指标搭建</a>
+<li class="chapter" data-level="3.1" data-path="base-model-construction-基础模型搭建.html"><a href="base-model-construction-基础模型搭建.html#intro-on-base-model-design-and-construction-模型设计搭建概要"><i class="fa fa-check"></i><b>3.1</b> Intro on (Base) Model Design and Construction 模型设计搭建概要</a></li>
+<li class="chapter" data-level="3.2" data-path="base-model-construction-基础模型搭建.html"><a href="base-model-construction-基础模型搭建.html#portfolio-specific-subjective-indicators-其他组合相关过滤指标"><i class="fa fa-check"></i><b>3.2</b> Portfolio-specific Subjective Indicators 其他组合相关过滤指标</a>
 <ul>
-<li class="chapter" data-level="3.1" data-path="technical-indicators-construction-技术指标搭建.html"><a href="technical-indicators-construction-技术指标搭建.html#technical-indicator-1-simple-moving-avaerage-sma"><i class="fa fa-check"></i><b>3.1</b> Technical Indicator 1: Simple Moving Avaerage (SMA)</a></li>
-<li class="chapter" data-level="3.2" data-path="technical-indicators-construction-技术指标搭建.html"><a href="technical-indicators-construction-技术指标搭建.html#technical-indicator-2-exponential-moving-average-ema"><i class="fa fa-check"></i><b>3.2</b> Technical Indicator 2: Exponential Moving Average (EMA)</a></li>
-<li class="chapter" data-level="3.3" data-path="technical-indicators-construction-技术指标搭建.html"><a href="technical-indicators-construction-技术指标搭建.html#technical-indicator-3-moving-average-convergence-divergence-macd"><i class="fa fa-check"></i><b>3.3</b> Technical Indicator 3: Moving Average Convergence Divergence (MACD)</a></li>
-<li class="chapter" data-level="3.4" data-path="technical-indicators-construction-技术指标搭建.html"><a href="technical-indicators-construction-技术指标搭建.html#technical-indicator-4-relative-strength-index-rsi"><i class="fa fa-check"></i><b>3.4</b> Technical Indicator 4: Relative Strength Index (RSI)</a></li>
-<li class="chapter" data-level="3.5" data-path="technical-indicators-construction-技术指标搭建.html"><a href="technical-indicators-construction-技术指标搭建.html#technical-indicator-5-bollinger-band-bb"><i class="fa fa-check"></i><b>3.5</b> Technical Indicator 5: Bollinger Band (BB)</a></li>
-<li class="chapter" data-level="3.6" data-path="technical-indicators-construction-技术指标搭建.html"><a href="technical-indicators-construction-技术指标搭建.html#technical-indicator-6-2-day-momentum-2-day-mom"><i class="fa fa-check"></i><b>3.6</b> Technical Indicator 6: 2-day Momentum (2-day Mom)</a></li>
-<li class="chapter" data-level="3.7" data-path="technical-indicators-construction-技术指标搭建.html"><a href="technical-indicators-construction-技术指标搭建.html#technical-indicator-7-price-volume-trend-pvt"><i class="fa fa-check"></i><b>3.7</b> Technical Indicator 7: Price Volume Trend (PVT)</a>
+<li class="chapter" data-level="3.2.1" data-path="base-model-construction-基础模型搭建.html"><a href="base-model-construction-基础模型搭建.html#section"><i class="fa fa-check"></i><b>3.2.1</b> </a></li>
+<li class="chapter" data-level="3.2.2" data-path="base-model-construction-基础模型搭建.html"><a href="base-model-construction-基础模型搭建.html#section-1"><i class="fa fa-check"></i><b>3.2.2</b> </a></li>
+<li class="chapter" data-level="3.2.3" data-path="base-model-construction-基础模型搭建.html"><a href="base-model-construction-基础模型搭建.html#section-2"><i class="fa fa-check"></i><b>3.2.3</b> </a></li>
+<li class="chapter" data-level="3.2.4" data-path="base-model-construction-基础模型搭建.html"><a href="base-model-construction-基础模型搭建.html#section-3"><i class="fa fa-check"></i><b>3.2.4</b> </a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="technical-indicators-construction-技术指标搭建.html"><a href="technical-indicators-construction-技术指标搭建.html"><i class="fa fa-check"></i><b>4</b> Technical Indicators Construction 技术指标搭建</a>
 <ul>
-<li class="chapter" data-level="3.7.1" data-path="technical-indicators-construction-技术指标搭建.html"><a href="technical-indicators-construction-技术指标搭建.html#volume"><i class="fa fa-check"></i><b>3.7.1</b> Volume</a></li>
-<li class="chapter" data-level="3.7.2" data-path="technical-indicators-construction-技术指标搭建.html"><a href="technical-indicators-construction-技术指标搭建.html#price"><i class="fa fa-check"></i><b>3.7.2</b> Price</a></li>
+<li class="chapter" data-level="4.1" data-path="technical-indicators-construction-技术指标搭建.html"><a href="technical-indicators-construction-技术指标搭建.html#technical-indicator-1-simple-moving-avaerage-sma"><i class="fa fa-check"></i><b>4.1</b> Technical Indicator 1: Simple Moving Avaerage (SMA)</a></li>
+<li class="chapter" data-level="4.2" data-path="technical-indicators-construction-技术指标搭建.html"><a href="technical-indicators-construction-技术指标搭建.html#technical-indicator-2-exponential-moving-average-ema"><i class="fa fa-check"></i><b>4.2</b> Technical Indicator 2: Exponential Moving Average (EMA)</a></li>
+<li class="chapter" data-level="4.3" data-path="technical-indicators-construction-技术指标搭建.html"><a href="technical-indicators-construction-技术指标搭建.html#technical-indicator-3-moving-average-convergence-divergence-macd"><i class="fa fa-check"></i><b>4.3</b> Technical Indicator 3: Moving Average Convergence Divergence (MACD)</a></li>
+<li class="chapter" data-level="4.4" data-path="technical-indicators-construction-技术指标搭建.html"><a href="technical-indicators-construction-技术指标搭建.html#technical-indicator-4-relative-strength-index-rsi"><i class="fa fa-check"></i><b>4.4</b> Technical Indicator 4: Relative Strength Index (RSI)</a></li>
+<li class="chapter" data-level="4.5" data-path="technical-indicators-construction-技术指标搭建.html"><a href="technical-indicators-construction-技术指标搭建.html#technical-indicator-5-bollinger-band-bb"><i class="fa fa-check"></i><b>4.5</b> Technical Indicator 5: Bollinger Band (BB)</a></li>
+<li class="chapter" data-level="4.6" data-path="technical-indicators-construction-技术指标搭建.html"><a href="technical-indicators-construction-技术指标搭建.html#technical-indicator-6-2-day-momentum-2-day-mom"><i class="fa fa-check"></i><b>4.6</b> Technical Indicator 6: 2-day Momentum (2-day Mom)</a></li>
+<li class="chapter" data-level="4.7" data-path="technical-indicators-construction-技术指标搭建.html"><a href="technical-indicators-construction-技术指标搭建.html#technical-indicator-7-price-volume-trend-pvt"><i class="fa fa-check"></i><b>4.7</b> Technical Indicator 7: Price Volume Trend (PVT)</a>
+<ul>
+<li class="chapter" data-level="4.7.1" data-path="technical-indicators-construction-技术指标搭建.html"><a href="technical-indicators-construction-技术指标搭建.html#volume"><i class="fa fa-check"></i><b>4.7.1</b> Volume</a></li>
+<li class="chapter" data-level="4.7.2" data-path="technical-indicators-construction-技术指标搭建.html"><a href="technical-indicators-construction-技术指标搭建.html#price"><i class="fa fa-check"></i><b>4.7.2</b> Price</a></li>
 </ul></li>
 </ul></li>
+<li class="chapter" data-level="5" data-path="selecting-effective-technical-indicators-选取有效的技术指标.html"><a href="selecting-effective-technical-indicators-选取有效的技术指标.html"><i class="fa fa-check"></i><b>5</b> Selecting Effective Technical Indicators 选取有效的技术指标</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="selecting-effective-technical-indicators-选取有效的技术指标.html"><a href="selecting-effective-technical-indicators-选取有效的技术指标.html#dynamic-choose-the-effective-technical-indicators"><i class="fa fa-check"></i><b>5.1</b> Dynamic: Choose the Effective Technical Indicators</a></li>
+<li class="chapter" data-level="5.2" data-path="selecting-effective-technical-indicators-选取有效的技术指标.html"><a href="selecting-effective-technical-indicators-选取有效的技术指标.html#other-model-construction-steps"><i class="fa fa-check"></i><b>5.2</b> Other Model Construction Steps</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="base-model-performance-模型选股表现.html"><a href="base-model-performance-模型选股表现.html"><i class="fa fa-check"></i><b>6</b> (Base) Model Performance 模型选股表现</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="base-model-performance-模型选股表现.html"><a href="base-model-performance-模型选股表现.html#model-illustration-stock-selection-using-technical-trade-signals-技术信号模型选股"><i class="fa fa-check"></i><b>6.1</b> Model Illustration: Stock Selection Using Technical Trade Signals 技术信号模型选股</a></li>
+<li class="chapter" data-level="6.2" data-path="base-model-performance-模型选股表现.html"><a href="base-model-performance-模型选股表现.html#portfolio-simulation-back-test-组合回测模拟"><i class="fa fa-check"></i><b>6.2</b> Portfolio Simulation (Back-test) 组合回测模拟</a></li>
+<li class="chapter" data-level="6.3" data-path="base-model-performance-模型选股表现.html"><a href="base-model-performance-模型选股表现.html#model-drawbacks-risks-模型缺陷和风险"><i class="fa fa-check"></i><b>6.3</b> Model Drawbacks &amp; Risks 模型缺陷和风险</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="full-model-construction-完整模型设计及搭建.html"><a href="full-model-construction-完整模型设计及搭建.html"><i class="fa fa-check"></i><b>7</b> Full Model Construction 完整模型设计及搭建</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="full-model-construction-完整模型设计及搭建.html"><a href="full-model-construction-完整模型设计及搭建.html#intro-on-full-model-design-construction-完整量价选股模型搭建及设计"><i class="fa fa-check"></i><b>7.1</b> Intro on Full Model Design &amp; Construction 完整量价选股模型搭建及设计</a></li>
+<li class="chapter" data-level="7.2" data-path="full-model-construction-完整模型设计及搭建.html"><a href="full-model-construction-完整模型设计及搭建.html#selecting-effective-fundamental-factors-选取有效的基本面因子"><i class="fa fa-check"></i><b>7.2</b> Selecting Effective Fundamental Factors 选取有效的基本面因子</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="fundamental-stock-selection-summary-基本面选股策略模型的总结.html"><a href="fundamental-stock-selection-summary-基本面选股策略模型的总结.html"><i class="fa fa-check"></i><b>8</b> Fundamental Stock Selection Summary 基本面选股策略模型的总结</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="fundamental-stock-selection-summary-基本面选股策略模型的总结.html"><a href="fundamental-stock-selection-summary-基本面选股策略模型的总结.html#stock-selection-模型选股"><i class="fa fa-check"></i><b>8.1</b> Stock Selection 模型选股</a></li>
+<li class="chapter" data-level="8.2" data-path="fundamental-stock-selection-summary-基本面选股策略模型的总结.html"><a href="fundamental-stock-selection-summary-基本面选股策略模型的总结.html#portfolio-simulation-back-test-组合回测"><i class="fa fa-check"></i><b>8.2</b> Portfolio Simulation (Back-test) 组合回测</a></li>
+<li class="chapter" data-level="8.3" data-path="fundamental-stock-selection-summary-基本面选股策略模型的总结.html"><a href="fundamental-stock-selection-summary-基本面选股策略模型的总结.html#base-model-vs.-full-model-comparison-基础完整模型的比较"><i class="fa fa-check"></i><b>8.3</b> Base Model vs. Full Model Comparison 基础&amp;完整模型的比较</a></li>
+<li class="chapter" data-level="8.4" data-path="fundamental-stock-selection-summary-基本面选股策略模型的总结.html"><a href="fundamental-stock-selection-summary-基本面选股策略模型的总结.html#model-strategy-drawbacks-模型和策略设计缺陷"><i class="fa fa-check"></i><b>8.4</b> Model &amp; Strategy Drawbacks 模型和策略设计缺陷</a></li>
+<li class="chapter" data-level="8.5" data-path="fundamental-stock-selection-summary-基本面选股策略模型的总结.html"><a href="fundamental-stock-selection-summary-基本面选股策略模型的总结.html#consideration-optimization-using-portfolio-performance-factors-利用组合因子优化选股模型"><i class="fa fa-check"></i><b>8.5</b> Consideration: Optimization Using Portfolio Performance Factors 利用组合因子优化选股模型</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="stock-selection-strategy-model-summary-选股策略模型总结.html"><a href="stock-selection-strategy-model-summary-选股策略模型总结.html"><i class="fa fa-check"></i><b>9</b> Stock Selection Strategy &amp; Model Summary 选股策略模型总结</a></li>
+<li class="chapter" data-level="10" data-path="asset-allocation-strategy-using-quantitative-models-资产配置量化模型.html"><a href="asset-allocation-strategy-using-quantitative-models-资产配置量化模型.html"><i class="fa fa-check"></i><b>10</b> Asset Allocation Strategy Using Quantitative Models 资产配置量化模型</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="asset-allocation-strategy-using-quantitative-models-资产配置量化模型.html"><a href="asset-allocation-strategy-using-quantitative-models-资产配置量化模型.html#dynamic-asset-allocation-model---a-quant-tool-to-optimize-portfolio-performance-rm"><i class="fa fa-check"></i><b>10.1</b> Dynamic Asset Allocation Model - A Quant tool to Optimize Portfolio Performance &amp; RM</a></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="quantitative-model-for-other-assets-量化模型.html"><a href="quantitative-model-for-other-assets-量化模型.html"><i class="fa fa-check"></i><b>11</b> Quantitative Model for other Assets 量化模型</a></li>
+<li class="chapter" data-level="12" data-path="risk-disclosure-风险披露.html"><a href="risk-disclosure-风险披露.html"><i class="fa fa-check"></i><b>12</b> Risk Disclosure 风险披露</a>
+<ul>
+<li class="chapter" data-level="12.1" data-path="risk-disclosure-风险披露.html"><a href="risk-disclosure-风险披露.html#risks-equities"><i class="fa fa-check"></i><b>12.1</b> Risks: Equities</a></li>
+<li class="chapter" data-level="12.2" data-path="risk-disclosure-风险披露.html"><a href="risk-disclosure-风险披露.html#risks-other-asset-classes"><i class="fa fa-check"></i><b>12.2</b> Risks: Other Asset Classes</a></li>
+<li class="chapter" data-level="12.3" data-path="risk-disclosure-风险披露.html"><a href="risk-disclosure-风险披露.html#portfolio-risks"><i class="fa fa-check"></i><b>12.3</b> Portfolio Risks</a></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="appendix.html"><a href="appendix.html"><i class="fa fa-check"></i><b>13</b> Appendix</a></li>
 <li class="divider"></li>
 <li><a href="https://bookdown.org" target="blank">Published with bookdown</a></li>
 
@@ -187,7 +230,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Price/Volume Stock Selection Strategy Using Quantitative Models 量价选股策略模型</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Multi-asset Investment strategy Using Quantitative Models 多资产策略量化模型</a>
           </h1>
         </div>
 
@@ -195,8 +238,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="technical-indicators-construction-技术指标搭建" class="section level1 hasAnchor" number="3">
-<h1><span class="header-section-number">Chapter 3</span> Technical Indicators Construction 技术指标搭建<a href="technical-indicators-construction-技术指标搭建.html#technical-indicators-construction-技术指标搭建" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="technical-indicators-construction-技术指标搭建" class="section level1 hasAnchor" number="4">
+<h1><span class="header-section-number">Chapter 4</span> Technical Indicators Construction 技术指标搭建<a href="technical-indicators-construction-技术指标搭建.html#technical-indicators-construction-技术指标搭建" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>As previously defined, technical analysis is the recording of the actual trading history, to identify potential patterns/trends with the assumption that similiar behavior will repeat in the future. A <strong>technical indicator</strong> is basically a mathematical representation and manipulation of the basic historical raw trading data and statistics of an asset.</p>
 <p>The following in <span class="math inline">\(\S 2.3\)</span> exhibits the computation results, graphs/charts, and generated trading signals based on subjectively set parameters for each of the <strong>12</strong> technical indicators. Whether one tech indicator is effective is evaluated in <span class="math inline">\(\S 2.4\)</span>. Model simulation for a portfolio constructed of the selected stocks will be performed and analyzed in <span class="math inline">\(\S 3.1\)</span>.</p>
 <p>Note: For all technical indicators utilized for this stock selection strategy, only the traditional (type of) technical analysis was applied; and there were no Machine Learning or AI enhanced directly for any indicators, nor any ML-driven evaluation processes included in selecting the significant indicators (in <span class="math inline">\(\S 2.4\)</span>).</p>
@@ -208,8 +251,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>In general, the program is set to perform computations and generate tradings signals accordingly for each input stock; without occupying the majority of report spaces, all outputs (computation summaries/tables, charts/graphs) are therefore suppressed (A warning like below is provided for each suppressed output). For each model step, the report only shows the program output for Tesla, Inc. (<code>TSLA.US</code>); the same applies for the remaining of the report. Analysts may construct a web ui database program, so the PMs and analysts are able to check the indicator valuations, and their graphs or charts for the most up-to-date selection of stocks.</p>
 <p>&lt;Insert a chart with all indicators (sig or not sig) and character them as type of indicators mom volume etc&gt;</p>
 <p>翻译.</p>
-<div id="technical-indicator-1-simple-moving-avaerage-sma" class="section level2 hasAnchor" number="3.1">
-<h2><span class="header-section-number">3.1</span> Technical Indicator 1: Simple Moving Avaerage (SMA)<a href="technical-indicators-construction-技术指标搭建.html#technical-indicator-1-simple-moving-avaerage-sma" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="technical-indicator-1-simple-moving-avaerage-sma" class="section level2 hasAnchor" number="4.1">
+<h2><span class="header-section-number">4.1</span> Technical Indicator 1: Simple Moving Avaerage (SMA)<a href="technical-indicators-construction-技术指标搭建.html#technical-indicator-1-simple-moving-avaerage-sma" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>(Includes <code>tsignal1</code>, <code>tsignal2</code>, and <code>tsignal3</code>)</p>
 <p>翻译</p>
 <ul>
@@ -224,7 +267,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><em></em></p>
 <table class="table" style="margin-left: auto; margin-right: auto;border-bottom: 0;">
 <caption>
-<span id="tab:unnamed-chunk-6">Table 3.1: </span>SMA Computations (TSLA.US)
+<span id="tab:unnamed-chunk-6">Table 4.1: </span>SMA Computations (TSLA.US)
 </caption>
 <thead>
 <tr>
@@ -644,7 +687,7 @@ TSLA
 <p>翻译</p>
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;border-bottom: 0;">
 <caption>
-<span id="tab:unnamed-chunk-15">Table 3.2: </span>SMA Trading Signals (TSLA.US)
+<span id="tab:unnamed-chunk-15">Table 4.2: </span>SMA Trading Signals (TSLA.US)
 </caption>
 <thead>
 <tr>
@@ -876,8 +919,8 @@ HOLD
 </tfoot>
 </table>
 </div>
-<div id="technical-indicator-2-exponential-moving-average-ema" class="section level2 hasAnchor" number="3.2">
-<h2><span class="header-section-number">3.2</span> Technical Indicator 2: Exponential Moving Average (EMA)<a href="technical-indicators-construction-技术指标搭建.html#technical-indicator-2-exponential-moving-average-ema" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="technical-indicator-2-exponential-moving-average-ema" class="section level2 hasAnchor" number="4.2">
+<h2><span class="header-section-number">4.2</span> Technical Indicator 2: Exponential Moving Average (EMA)<a href="technical-indicators-construction-技术指标搭建.html#technical-indicator-2-exponential-moving-average-ema" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>(Includes <code>tsignal4</code>, <code>tsignal5</code>, and <code>tsignal6</code>)</p>
 <ul>
 <li>Intro- <strong>EMA</strong>:</li>
@@ -897,7 +940,7 @@ HOLD
 <p><em></em></p>
 <table class="table" style="margin-left: auto; margin-right: auto;border-bottom: 0;">
 <caption>
-<span id="tab:unnamed-chunk-20">Table 3.3: </span>EMA Computations (TSLA.US)
+<span id="tab:unnamed-chunk-20">Table 4.3: </span>EMA Computations (TSLA.US)
 </caption>
 <thead>
 <tr>
@@ -1327,7 +1370,7 @@ TSLA
 <p>翻译</p>
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;border-bottom: 0;">
 <caption>
-<span id="tab:unnamed-chunk-29">Table 3.4: </span>EMA Trading Signals (TSLA.US)
+<span id="tab:unnamed-chunk-29">Table 4.4: </span>EMA Trading Signals (TSLA.US)
 </caption>
 <thead>
 <tr>
@@ -1559,11 +1602,11 @@ HOLD
 </tfoot>
 </table>
 </div>
-<div id="technical-indicator-3-moving-average-convergence-divergence-macd" class="section level2 hasAnchor" number="3.3">
-<h2><span class="header-section-number">3.3</span> Technical Indicator 3: Moving Average Convergence Divergence (MACD)<a href="technical-indicators-construction-技术指标搭建.html#technical-indicator-3-moving-average-convergence-divergence-macd" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="technical-indicator-3-moving-average-convergence-divergence-macd" class="section level2 hasAnchor" number="4.3">
+<h2><span class="header-section-number">4.3</span> Technical Indicator 3: Moving Average Convergence Divergence (MACD)<a href="technical-indicators-construction-技术指标搭建.html#technical-indicator-3-moving-average-convergence-divergence-macd" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 </div>
-<div id="technical-indicator-4-relative-strength-index-rsi" class="section level2 hasAnchor" number="3.4">
-<h2><span class="header-section-number">3.4</span> Technical Indicator 4: Relative Strength Index (RSI)<a href="technical-indicators-construction-技术指标搭建.html#technical-indicator-4-relative-strength-index-rsi" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="technical-indicator-4-relative-strength-index-rsi" class="section level2 hasAnchor" number="4.4">
+<h2><span class="header-section-number">4.4</span> Technical Indicator 4: Relative Strength Index (RSI)<a href="technical-indicators-construction-技术指标搭建.html#technical-indicator-4-relative-strength-index-rsi" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>The RSI (Relative Strength Index) is a momentum oscillator that measures the speed and change of price movements.
 It ranges from 0 to 100 and is used to identify overbought or oversold conditions in a market.
 An RSI level below 30 generates buy signals while an RSI level above 70 generates sell signals.</p>
@@ -1574,26 +1617,26 @@ Example RSI Fundamental example ICIR to dig significant momentum factors.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="technical-indicators-construction-技术指标搭建.html#cb2-1" tabindex="-1"></a><span class="co">#</span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="technical-indicators-construction-技术指标搭建.html#cb3-1" tabindex="-1"></a><span class="co">#</span></span></code></pre></div>
 </div>
-<div id="technical-indicator-5-bollinger-band-bb" class="section level2 hasAnchor" number="3.5">
-<h2><span class="header-section-number">3.5</span> Technical Indicator 5: Bollinger Band (BB)<a href="technical-indicators-construction-技术指标搭建.html#technical-indicator-5-bollinger-band-bb" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="technical-indicator-5-bollinger-band-bb" class="section level2 hasAnchor" number="4.5">
+<h2><span class="header-section-number">4.5</span> Technical Indicator 5: Bollinger Band (BB)<a href="technical-indicators-construction-技术指标搭建.html#technical-indicator-5-bollinger-band-bb" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p><code>In Progress</code></p>
 </div>
-<div id="technical-indicator-6-2-day-momentum-2-day-mom" class="section level2 hasAnchor" number="3.6">
-<h2><span class="header-section-number">3.6</span> Technical Indicator 6: 2-day Momentum (2-day Mom)<a href="technical-indicators-construction-技术指标搭建.html#technical-indicator-6-2-day-momentum-2-day-mom" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="technical-indicator-6-2-day-momentum-2-day-mom" class="section level2 hasAnchor" number="4.6">
+<h2><span class="header-section-number">4.6</span> Technical Indicator 6: 2-day Momentum (2-day Mom)<a href="technical-indicators-construction-技术指标搭建.html#technical-indicator-6-2-day-momentum-2-day-mom" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p><code>In Progress</code></p>
 </div>
-<div id="technical-indicator-7-price-volume-trend-pvt" class="section level2 hasAnchor" number="3.7">
-<h2><span class="header-section-number">3.7</span> Technical Indicator 7: Price Volume Trend (PVT)<a href="technical-indicators-construction-技术指标搭建.html#technical-indicator-7-price-volume-trend-pvt" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="technical-indicator-7-price-volume-trend-pvt" class="section level2 hasAnchor" number="4.7">
+<h2><span class="header-section-number">4.7</span> Technical Indicator 7: Price Volume Trend (PVT)<a href="technical-indicators-construction-技术指标搭建.html#technical-indicator-7-price-volume-trend-pvt" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p><code>In Progress</code></p>
-<div id="volume" class="section level3 hasAnchor" number="3.7.1">
-<h3><span class="header-section-number">3.7.1</span> Volume<a href="technical-indicators-construction-技术指标搭建.html#volume" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="volume" class="section level3 hasAnchor" number="4.7.1">
+<h3><span class="header-section-number">4.7.1</span> Volume<a href="technical-indicators-construction-技术指标搭建.html#volume" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p><code>In Progress</code></p>
 <p>One of the most common basic indicators traders examine is the trading volume.
 Trading volume is an indication for the ‘activeness’ of a financial instrument.
 Depending on the financial instruments, trading volume can be measured either using the number of stocks traded or number of contracts with changed ownerships.</p>
 </div>
-<div id="price" class="section level3 hasAnchor" number="3.7.2">
-<h3><span class="header-section-number">3.7.2</span> Price<a href="technical-indicators-construction-技术指标搭建.html#price" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="price" class="section level3 hasAnchor" number="4.7.2">
+<h3><span class="header-section-number">4.7.2</span> Price<a href="technical-indicators-construction-技术指标搭建.html#price" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p><code>In Progress</code></p>
 <p>To put this in practice, if an increase in volume is observed with a steady increase in price, the instrument can be viewed as steady and strong.
 However, if volume and price are changing in different directions, a reversal might be happened.</p>
@@ -1609,8 +1652,8 @@ However, if volume and price are changing in different directions, a reversal mi
           </div>
         </div>
       </div>
-<a href="base-model-construction-基础模型搭建.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-
+<a href="base-model-construction-基础模型搭建.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="selecting-effective-technical-indicators-选取有效的技术指标.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -1641,7 +1684,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/yihuahuang1/multi-asset-strategy/edit/master/Technical-indicators-construction.Rmd",
+"link": "https://github.com/yihuahuang1/multi-asset-strategy/edit/master/Technical-Indicators-Construction.Rmd",
 "text": "Edit"
 },
 "history": {

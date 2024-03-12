@@ -4,13 +4,16 @@ language:
     chapter_name: "Chapter "
 rmd_files: [
   "index.Rmd",
+  "Investment-Strategy-Outlook.Rmd",
   "Base-Model-Construction.Rmd",
-  "Technical-indicators-construction.Rmd",
-  "Effective-Technical-Indicators.Rmd",
+  "Technical-Indicators-Construction.Rmd",
+  "Select-Effective-Technical-Indicators.Rmd",
   "Base-Model-Performance.Rmd",
   "Full-Model-Construction.Rmd",
   "Full-Model-Performance.Rmd",
-  "Price-Volume-Strategy-Summary.Rmd",
+  "Stock-Selection-Strategy-Summary.Rmd",
+  "Asset-Allocation-Model.Rmd",
+  "Quant-Model-Other-Asset-Class.Rmd",
   "Risk-Disclosure.Rmd",
   "Appendix.Rmd"
 ]

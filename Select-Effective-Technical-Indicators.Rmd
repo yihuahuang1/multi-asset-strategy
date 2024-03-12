@@ -1,4 +1,5 @@
-# Effective Technical Indicators 选取有效的技术指标
+# Selecting Effective Technical Indicators 选取有效的技术指标
+
 `In Progress`
 
 ## Dynamic: Choose the Effective Technical Indicators 
@@ -6,4 +7,5 @@
 `In Progress`
 
 ## Other Model Construction Steps 
+
 `In Progress`

@@ -7,7 +7,7 @@ bookdown::gitbook:
   config:
     toc:
       before: |
-        <li><a href="./">Multi-asset Portfolio Strategy</a></li>
+        <li><a href="./">Multi-Asset Portfolio Strategy</a></li>
       after: |
         <li><a href="https://bookdown.org" target="blank">Published with bookdown</a></li>
     edit: https://github.com/yihuahuang1/multi-asset-strategy/edit/master/%s
