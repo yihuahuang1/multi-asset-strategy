@@ -1,6 +1,1 @@
-# Writing in Bookdown {#write}
-
-Coming soon: 
-
-- Adding chapters
-- Citations
+# This is chapter 3

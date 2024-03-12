@@ -5,7 +5,7 @@ author: "Albert Huang"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 # output: bookdown::gitbook
-documentclass: book, ctexart
+documentclass: book
 bibliography: [book.bib, packages.bib]
 biblio-style: apalike
 link-citations: yes
@@ -24,7 +24,7 @@ output:
 editor_options: 
   markdown: 
     wrap: sentence
-description: "A mini bookdown tutorial book on how to make bookdown books."
+description: "THIS IS THE DESCRIP PART."
 ---
 # Investment Strategy Outlook 投资策略及模型规划
 
@@ -84,14 +84,7 @@ By acknowledging the usefulness and limitations of fundamental and technical ana
 ----
 
 
-**Examples:**
 
-We have been using bookdown for the Ocean Health Index:  [**ohi-science.org/data-science-training**](http://ohi-science.org/data-science-training) and Openscapes: [**openscapes.org/series**](https://openscapes.org/series).  
-And R Markdown is much more than books and websites -- here's a [**one-minute video about R Markdown**](http://rmarkdown.rstudio.com/lesson-1.html) to get you excited. 
 
-----
 
-## Learn all about Bookdown
-
-The best way to learn more about bookdown is from Yihui Xie himself. You can read his book [bookdown: Authoring Books and Technical Documents with R Markdown](https://bookdown.org/yihui/bookdown/) or watch his webinar [introducing bookdown](https://www.rstudio.com/resources/webinars/introducing-bookdown/).
 

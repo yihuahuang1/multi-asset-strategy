@@ -10,3 +10,6 @@ write
 investment-strategy-outlook-投资策略及模型规划
 research-objectives-研究目标
 considerations-on-investment-strategy-投资策略的思考
+output-bookdowngitbook
+this-is-chapter-2
+this-is-chapter-3
