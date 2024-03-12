@@ -1,5 +1,5 @@
 
-# Investment Strategy Outlook 投资策略及模型规划 {-}
+# Investment Strategy Outlook 投资策略及模型规划
 
 title: "Stock Selection Strategy Using Quantitative Models 量价选股策略模型"
 subtitle: "The Base Model: a Technical Signaling Tool for Stock Selection 基础模型：技术指标选股工具"
