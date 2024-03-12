@@ -3,8 +3,8 @@ language:
   ui:
     chapter_name: "Chapter "
 rmd_files: [
-  "index.Rmd",
-  "setup.Rmd",
+  "Investment Strategy Outlook 投资策略及模型规划.Rmd",
+  "Base Model Construction 基础模型搭建.Rmd",
   "write.Rmd"]
 delete_merged_file: true 
 output_dir: "docs"
