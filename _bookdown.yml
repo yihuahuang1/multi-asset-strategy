@@ -5,6 +5,14 @@ language:
 rmd_files: [
   "index.Rmd",
   "Base-Model-Construction.Rmd",
-  "Technical-indicators-construction.Rmd"]
+  "Technical-indicators-construction.Rmd",
+  "Effective-Technical-Indicators.Rmd",
+  "Base-Model-Performance.Rmd",
+  "Full-Model-Construction.Rmd",
+  "Full-Model-Performance.Rmd",
+  "Price-Volume-Strategy-Summary.Rmd",
+  "Risk-Disclosure.Rmd",
+  "Appendix.Rmd"
+]
 delete_merged_file: true 
 output_dir: "docs"

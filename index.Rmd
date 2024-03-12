@@ -1,6 +1,6 @@
 --- 
-title: "Price/Volume Stock Selection Strategy &emsp; &emsp; &emsp; &emsp;Using Quantitative Models &emsp; &emsp; &emsp; &emsp; 量价选股策略模型"
-subtitle: "Base Model: a Technical Signaling Tool for Stock Selection &emsp; &emsp; &emsp; 基础模型：技术指标选股工具"
+title: "Price/Volume Stock Selection Strategy Using Quantitative Models 量价选股策略模型"
+subtitle: "Base Model: a Technical Signaling Tool for Stock Selection 基础模型：技术指标选股工具"
 author: "Albert Huang"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
@@ -24,7 +24,7 @@ output:
 editor_options: 
   markdown: 
     wrap: sentence
-description: "THIS IS THE DESCRIP PART."
+description: "THIS IS THE DESCRIP PART on index."
 ---
 # Investment Strategy Outlook 投资策略及模型规划
 
