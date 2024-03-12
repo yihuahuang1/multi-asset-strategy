@@ -1,5 +1,5 @@
 --- 
-title: "&emsp; Price/Volume Stock Selection Strategy &emsp; &emsp; &emsp; &emsp;Using Quantitative Models &emsp; &emsp; &emsp; &emsp; 量价选股策略模型"
+title: "Price/Volume Stock Selection Strategy &emsp; &emsp; &emsp; &emsp;Using Quantitative Models &emsp; &emsp; &emsp; &emsp; 量价选股策略模型"
 subtitle: "Base Model: a Technical Signaling Tool for Stock Selection &emsp; &emsp; &emsp; 基础模型：技术指标选股工具"
 author: "Albert Huang"
 date: "`r Sys.Date()`"
