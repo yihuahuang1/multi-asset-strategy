@@ -50,3 +50,16 @@ risks-other-asset-classes
 portfolio-risks
 appendix
 intro-on-gtaa
+tab:unnamed-chunk-6
+tab:unnamed-chunk-10
+tab:unnamed-chunk-14
+tab:unnamed-chunk-18
+tab:unnamed-chunk-21
+text
+tab:unnamed-chunk-33
+tab:unnamed-chunk-38
+tab:unnamed-chunk-42
+tab:unnamed-chunk-46
+tab:unnamed-chunk-50
+tab:unnamed-chunk-53
+global-environment

@@ -26,4 +26,6 @@ editor_options:
 description: "THIS IS THE DESCRIP PART on index."
 ---
 
+# Multi-asset Investment strategy Using Quantitative Models 多资产策略量化模型 {-}
+
 Welcome to the Homepage of Global Multi-asset Portfolio Strategy ebook. 

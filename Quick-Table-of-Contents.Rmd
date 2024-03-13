@@ -3,6 +3,6 @@
 sss
 
 
-\@ref(2.1) for stock selection model
+Cross-referencing (Section \@ref(2.1 Research Objectives)) for stock selection model
 
 \@ref(2.1) for stock selection model

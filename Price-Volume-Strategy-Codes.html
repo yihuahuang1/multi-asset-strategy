@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 3 (Base) Model Construction 基础模型搭建 | Price Volume Strategy Codes</title>
-  <meta name="description" content="Chapter 3 (Base) Model Construction 基础模型搭建 | Price Volume Strategy Codes" />
-  <meta name="generator" content="bookdown 0.38 and GitBook 2.6.7" />
+  <title>Price Volume Strategy Codes</title>
+  <meta name="description" content="Price Volume Strategy Codes" />
+  <meta name="generator" content="bookdown #bookdown:version# and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 3 (Base) Model Construction 基础模型搭建 | Price Volume Strategy Codes" />
+  <meta property="og:title" content="Price Volume Strategy Codes" />
   <meta property="og:type" content="book" />
   
   
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 3 (Base) Model Construction 基础模型搭建 | Price Volume Strategy Codes" />
+  <meta name="twitter:title" content="Price Volume Strategy Codes" />
   
   
   
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="investment-strategy-outlook-投资策略及模型规划.html"/>
-
+<!--bookdown:link_prev-->
+<!--bookdown:link_next-->
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -40,14 +40,14 @@
 <link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
-
-
-
-
-
-
-
-
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
 <link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
 <link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
@@ -70,38 +70,41 @@
 
 
 
+<!--bookdown:title:start-->
+<div id="header">
+<h1 class="title">Price Volume Strategy Codes</h1>
+<p class="author"><em>Albert Huang</em></p>
+<p class="date"><em>2/19/2024</em></p>
+</div>
+<!--bookdown:title:end-->
+
+<!--bookdown:toc:start-->
   <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
 
     <div class="book-summary">
       <nav role="navigation">
-
-<ul class="summary">
-<li><a href="./">Multi-Asset Portfolio Strategy</a></li>
-
-<li class="divider"></li>
-<li class="chapter" data-level="1" data-path="global-environment.html"><a href="global-environment.html"><i class="fa fa-check"></i><b>1</b> GLOBAL ENVIRONMENT</a></li>
-<li class="chapter" data-level="2" data-path="investment-strategy-outlook-投资策略及模型规划.html"><a href="investment-strategy-outlook-投资策略及模型规划.html"><i class="fa fa-check"></i><b>2</b> Investment Strategy Outlook 投资策略及模型规划</a>
+<!--bookdown:toc2:start-->
 <ul>
-<li class="chapter" data-level="2.1" data-path="investment-strategy-outlook-投资策略及模型规划.html"><a href="investment-strategy-outlook-投资策略及模型规划.html#research-objectives-研究目标"><i class="fa fa-check"></i><b>2.1</b> Research Objectives 研究目标</a></li>
-<li class="chapter" data-level="2.2" data-path="investment-strategy-outlook-投资策略及模型规划.html"><a href="investment-strategy-outlook-投资策略及模型规划.html#considerations-on-investment-strategy-投资策略的思考"><i class="fa fa-check"></i><b>2.2</b> Considerations on Investment Strategy 投资策略的思考</a></li>
-</ul></li>
-<li class="chapter" data-level="3" data-path="base-model-construction-基础模型搭建.html"><a href="base-model-construction-基础模型搭建.html"><i class="fa fa-check"></i><b>3</b> (Base) Model Construction 基础模型搭建</a>
+<li><a href="#global-environment" id="toc-global-environment"><span class="toc-section-number">1</span> GLOBAL ENVIRONMENT</a></li>
+<li><a href="#investment-strategy-outlook-投资策略及模型规划" id="toc-investment-strategy-outlook-投资策略及模型规划"><span class="toc-section-number">2</span> Investment Strategy Outlook 投资策略及模型规划</a>
 <ul>
-<li class="chapter" data-level="3.1" data-path="base-model-construction-基础模型搭建.html"><a href="base-model-construction-基础模型搭建.html#intro-on-base-model-design-and-construction-模型设计搭建概要"><i class="fa fa-check"></i><b>3.1</b> Intro on (Base) Model Design and Construction 模型设计搭建概要</a></li>
-<li class="chapter" data-level="3.2" data-path="base-model-construction-基础模型搭建.html"><a href="base-model-construction-基础模型搭建.html#portfolio-specific-subjective-indicators-其他组合相关过滤指标"><i class="fa fa-check"></i><b>3.2</b> Portfolio-specific Subjective Indicators 其他组合相关过滤指标</a>
+<li><a href="#research-objectives-研究目标" id="toc-research-objectives-研究目标"><span class="toc-section-number">2.1</span> Research Objectives 研究目标</a></li>
+<li><a href="#considerations-on-investment-strategy-投资策略的思考" id="toc-considerations-on-investment-strategy-投资策略的思考"><span class="toc-section-number">2.2</span> Considerations on Investment Strategy 投资策略的思考</a></li>
+</ul></li>
+<li><a href="#base-model-construction-基础模型搭建" id="toc-base-model-construction-基础模型搭建"><span class="toc-section-number">3</span> (Base) Model Construction 基础模型搭建</a>
 <ul>
-<li class="chapter" data-level="3.2.1" data-path="base-model-construction-基础模型搭建.html"><a href="base-model-construction-基础模型搭建.html#section"><i class="fa fa-check"></i><b>3.2.1</b> </a></li>
-<li class="chapter" data-level="3.2.2" data-path="base-model-construction-基础模型搭建.html"><a href="base-model-construction-基础模型搭建.html#section-1"><i class="fa fa-check"></i><b>3.2.2</b> </a></li>
-<li class="chapter" data-level="3.2.3" data-path="base-model-construction-基础模型搭建.html"><a href="base-model-construction-基础模型搭建.html#section-2"><i class="fa fa-check"></i><b>3.2.3</b> </a></li>
-<li class="chapter" data-level="3.2.4" data-path="base-model-construction-基础模型搭建.html"><a href="base-model-construction-基础模型搭建.html#section-3"><i class="fa fa-check"></i><b>3.2.4</b> </a></li>
+<li><a href="#intro-on-base-model-design-and-construction-模型设计搭建概要" id="toc-intro-on-base-model-design-and-construction-模型设计搭建概要"><span class="toc-section-number">3.1</span> Intro on (Base) Model Design and Construction 模型设计搭建概要</a></li>
+<li><a href="#portfolio-specific-subjective-indicators-其他组合相关过滤指标" id="toc-portfolio-specific-subjective-indicators-其他组合相关过滤指标"><span class="toc-section-number">3.2</span> Portfolio-specific Subjective Indicators 其他组合相关过滤指标</a>
+<ul>
+<li><a href="#section" id="toc-section"><span class="toc-section-number">3.2.1</span> </a></li>
+<li><a href="#section-1" id="toc-section-1"><span class="toc-section-number">3.2.2</span> </a></li>
+<li><a href="#section-2" id="toc-section-2"><span class="toc-section-number">3.2.3</span> </a></li>
+<li><a href="#section-3" id="toc-section-3"><span class="toc-section-number">3.2.4</span> </a></li>
 </ul></li>
-<li class="chapter" data-level="3.3" data-path="base-model-construction-基础模型搭建.html"><a href="base-model-construction-基础模型搭建.html#technical-indicators-construction-技术指标搭建"><i class="fa fa-check"></i><b>3.3</b> Technical Indicators Construction 技术指标搭建</a></li>
+<li><a href="#technical-indicators-construction-技术指标搭建" id="toc-technical-indicators-construction-技术指标搭建"><span class="toc-section-number">3.3</span> Technical Indicators Construction 技术指标搭建</a></li>
 </ul></li>
-<li class="divider"></li>
-<li><a href="https://bookdown.org" target="blank">Published with bookdown</a></li>
-
 </ul>
-
+<!--bookdown:toc2:end-->
       </nav>
     </div>
 
@@ -117,13 +120,158 @@
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="base-model-construction-基础模型搭建" class="section level1 hasAnchor" number="3">
-<h1><span class="header-section-number">Chapter 3</span> (Base) Model Construction 基础模型搭建<a href="base-model-construction-基础模型搭建.html#base-model-construction-基础模型搭建" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<div id="intro-on-base-model-design-and-construction-模型设计搭建概要" class="section level2 hasAnchor" number="3.1">
-<h2><span class="header-section-number">3.1</span> Intro on (Base) Model Design and Construction 模型设计搭建概要<a href="base-model-construction-基础模型搭建.html#intro-on-base-model-design-and-construction-模型设计搭建概要" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<!--bookdown:toc:end-->
+<!--bookdown:body:start-->
+<div id="global-environment" class="section level1 hasAnchor" number="1">
+<h1 class="hasAnchor"><span class="header-section-number">1</span> GLOBAL ENVIRONMENT<a href="#global-environment" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div style="page-break-after: always;"></div>
+<p><strong>START HERE</strong></p>
+<hr />
+</div>
+<div id="investment-strategy-outlook-投资策略及模型规划" class="section level1 hasAnchor" number="2">
+<h1 class="hasAnchor"><span class="header-section-number">2</span> Investment Strategy Outlook 投资策略及模型规划<a href="#investment-strategy-outlook-投资策略及模型规划" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="research-objectives-研究目标" class="section level2 hasAnchor" number="2.1">
+<h2 class="hasAnchor"><span class="header-section-number">2.1</span> Research Objectives 研究目标<a href="#research-objectives-研究目标" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+</div>
+<div id="considerations-on-investment-strategy-投资策略的思考" class="section level2 hasAnchor" number="2.2">
+<h2 class="hasAnchor"><span class="header-section-number">2.2</span> Considerations on Investment Strategy 投资策略的思考<a href="#considerations-on-investment-strategy-投资策略的思考" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <table class="table" style="margin-left: auto; margin-right: auto;border-bottom: 0;">
 <caption>
-<span id="tab:unnamed-chunk-9">Table 3.1: </span>Cleaned Data Glance: NYSE and NASDAQ Stocks
+(#tab:unnamed-chunk-33)Common Indicators and Factors in Equity Research
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Factor Type
+</th>
+<th style="text-align:left;">
+Factor Categories
+</th>
+<th style="text-align:left;">
+Sample List of Indicators
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+技术类指标(Technical Indicators)
+</td>
+<td style="text-align:left;font-weight: bold;">
+均线指标类因子
+(Moving Average Factor)
+</td>
+<td style="text-align:left;">
+Simple Moving Average (SMA); Exponential Moving Average (EMA); Weighted Moving Average (WMA); Double Exponential Moving Average (DEMA); Triple Exponential Moving Average (TEMA); Gann High Low Activator (HiLo); Hull Exponential Moving Average (HMA); Linear Regression Moving Average (LINREG); Symmetric Weighted Moving Average (SMWA); Variable Index Dynamic Average (VIDYA); Volume Weighted Moving Average (VWMA); Zero Lag Moving Average (ZLMA); and etc.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+NA
+</td>
+<td style="text-align:left;font-weight: bold;">
+成交量类因子
+(Volume Factor)
+</td>
+<td style="text-align:left;">
+Accumulation/Distribution Oscillator (ADOSC); Chaikin Money Flow (CMF); Price Volume Trend (PVT); On-Balance Volume (OBV); Archer On-Balance Volume (AOBV); Elder’s Force Index (EFI); Ease of Movement (EOM); Money Flow Index (MFI); Positive Volume Index (PVI); Negative Volume Index (NVI); Price-Volume (PVOL); Price Volume Rank (PVR); Volume Profile (VP); etc.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+NA
+</td>
+<td style="text-align:left;font-weight: bold;">
+动量类因子
+(Momentum Factor)
+</td>
+<td style="text-align:left;">
+Rate of Change (ROC); Awesome Oscillator (AO); Absolute Price Oscillator (APO); Bias (BIAS); Balance of Power (BOP); Commodity Channel Index (CCI); Chanda Forecast Oscillator (CFO); Center of Gravity (CG); Correlation Trend Indicator (CTI); Efficiency Ratio (ER); Elder Ray Index (ERI); Moving Average Convergence Divergence (MACD); Stochastic Oscillator (KDJ); Inertia; Relative Strength Index (RSI); Relative Strength Xtra (RSX); n-day Momentum (MOM); Psychological Line (PSL); Slope; Stochastic Momentum Index Ergodic Indicator (SMI Ergodic Indicator); Squeeze (SQZ); Squeeze Pro (SQZPRO); Stochastic Relative Strength Index (STOCHRSI); Triple Exponentially Smoothed Moving Average (TRIX); True Strength Index (TSI); etc.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+NA
+</td>
+<td style="text-align:left;font-weight: bold;">
+趋势类因子
+(Trend Factor)
+</td>
+<td style="text-align:left;">
+Average Directional Movement Index (ADX); Archer Moving Averages Trends (AMAT); Choppiness Index (CHOP); Decay; Increasing/Decreasing; Detrend Price Oscillator (DPO); Long run/Short run; Q Stick (qstick); TTM Trend; Vortex (Vortex Indicator); and etc.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+NA
+</td>
+<td style="text-align:left;font-weight: bold;">
+波动性类因子
+(Volatility Factor)
+</td>
+<td style="text-align:left;">
+Historical Volatility (HV); Implied Volatility (IV); beta (<span class="math inline">\(\beta\)</span>); Aberration; True Range (TR); Average True Range (ATR); Bollinger Bands (BBands); Mass Index (massi); Relative Volatility Index (RVI); Acceleration Bands (accbands); Elder’s Thermometer (thermos); Ulcer Index (ui); etc.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+基本面类指标(Fundamental Indicators)
+</td>
+<td style="text-align:left;font-weight: bold;">
+基本面类因子 (经营效率，盈利能力，成长性和估值，现金流，财务质量)
+(Fundamental Factor)
+</td>
+<td style="text-align:left;">
+Asset Turnover Ratio (ATR); Inventory Turnover Ratio (ITR); Account Receivable Turnover Ratio (ARTR); Long-term Asset Turnover Ratio (LATR), Short-term (Operating) Asset Turnover Ratio (SATR); EV/EBITDA; EV/Sales; Free Cash Flow Yield (FCF Yield); Price/Earnings Ratio (PE); Price/Book Ratio (PB); Price/Sales (PS); Return on Assets (ROA); Return on Equity (ROE); Return on Invested Capital (ROIC); Dividend Yield; Gross Margin Ratio (GMR); Operating Profit Margin Ratio (OMR); Net Profit/EBIT Margin Ratio (NPR); EBITDA Margin Ratio; Weighted Average Cost of Capital (WACC); Economic Profit (ROIC-WACC); and etc.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+NA
+</td>
+<td style="text-align:left;font-weight: bold;">
+风格因子
+(Other Style Factor)
+</td>
+<td style="text-align:left;">
+Size; Dividend; Sentiment; etc.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+组合表现类指标((Portfolio Performance Indicators)
+</td>
+<td style="text-align:left;font-weight: bold;">
+投资策略因子
+(Strategy &amp; Portfolio Factor)
+</td>
+<td style="text-align:left;">
+Information Ratio; Maximum Drawdown (MDD); etc.
+</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<span style="font-style: italic;">Note: </span>
+</td>
+</tr>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<sup></sup> List of Common indicators and factors in Equity Research are shown above, not all factors above are used in this study.
+</td>
+</tr>
+</tfoot>
+</table>
+</div>
+</div>
+<div id="base-model-construction-基础模型搭建" class="section level1 hasAnchor" number="3">
+<h1 class="hasAnchor"><span class="header-section-number">3</span> (Base) Model Construction 基础模型搭建<a href="#base-model-construction-基础模型搭建" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="intro-on-base-model-design-and-construction-模型设计搭建概要" class="section level2 hasAnchor" number="3.1">
+<h2 class="hasAnchor"><span class="header-section-number">3.1</span> Intro on (Base) Model Design and Construction 模型设计搭建概要<a href="#intro-on-base-model-design-and-construction-模型设计搭建概要" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<table class="table" style="margin-left: auto; margin-right: auto;border-bottom: 0;">
+<caption>
+(#tab:unnamed-chunk-38)Cleaned Data Glance: NYSE and NASDAQ Stocks
 </caption>
 <thead>
 <tr>
@@ -495,16 +643,16 @@ TSLA
 </table>
 </div>
 <div id="portfolio-specific-subjective-indicators-其他组合相关过滤指标" class="section level2 hasAnchor" number="3.2">
-<h2><span class="header-section-number">3.2</span> Portfolio-specific Subjective Indicators 其他组合相关过滤指标<a href="base-model-construction-基础模型搭建.html#portfolio-specific-subjective-indicators-其他组合相关过滤指标" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<h2 class="hasAnchor"><span class="header-section-number">3.2</span> Portfolio-specific Subjective Indicators 其他组合相关过滤指标<a href="#portfolio-specific-subjective-indicators-其他组合相关过滤指标" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <div id="section" class="section level3 hasAnchor" number="3.2.1">
-<h3><span class="header-section-number">3.2.1</span> <a href="base-model-construction-基础模型搭建.html#section" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<h3 class="hasAnchor"><span class="header-section-number">3.2.1</span> <a href="#section" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <pre><code>## character(0)</code></pre>
 </div>
 <div id="section-1" class="section level3 hasAnchor" number="3.2.2">
-<h3><span class="header-section-number">3.2.2</span> <a href="base-model-construction-基础模型搭建.html#section-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<h3 class="hasAnchor"><span class="header-section-number">3.2.2</span> <a href="#section-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <table class="table" style="margin-left: auto; margin-right: auto;border-bottom: 0;">
 <caption>
-<span id="tab:unnamed-chunk-13">Table 3.2: </span>Average Weekly Trading Volume
+(#tab:unnamed-chunk-42)Average Weekly Trading Volume
 </caption>
 <thead>
 <tr>
@@ -680,10 +828,10 @@ TSLA
 <pre><code>## character(0)</code></pre>
 </div>
 <div id="section-2" class="section level3 hasAnchor" number="3.2.3">
-<h3><span class="header-section-number">3.2.3</span> <a href="base-model-construction-基础模型搭建.html#section-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<h3 class="hasAnchor"><span class="header-section-number">3.2.3</span> <a href="#section-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <table class="table" style="margin-left: auto; margin-right: auto;border-bottom: 0;">
 <caption>
-<span id="tab:unnamed-chunk-17">Table 3.3: </span>Price Percentage Change (1-day ROC)
+(#tab:unnamed-chunk-46)Price Percentage Change (1-day ROC)
 </caption>
 <thead>
 <tr>
@@ -859,10 +1007,10 @@ TSLA
 <pre><code>## character(0)</code></pre>
 </div>
 <div id="section-3" class="section level3 hasAnchor" number="3.2.4">
-<h3><span class="header-section-number">3.2.4</span> <a href="base-model-construction-基础模型搭建.html#section-3" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<h3 class="hasAnchor"><span class="header-section-number">3.2.4</span> <a href="#section-3" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <table class="table" style="margin-left: auto; margin-right: auto;border-bottom: 0;">
 <caption>
-<span id="tab:unnamed-chunk-21">Table 3.4: </span>Implied Annualized Volatility
+(#tab:unnamed-chunk-50)Implied Annualized Volatility
 </caption>
 <thead>
 <tr>
@@ -1038,7 +1186,7 @@ TSLA
 <pre><code>## [1] &quot;META&quot; &quot;NVDA&quot;</code></pre>
 <table class="table" style="margin-left: auto; margin-right: auto;border-bottom: 0;">
 <caption>
-<span id="tab:unnamed-chunk-24">Table 3.5: </span>Stocks Removed by the Subjective Indicators
+(#tab:unnamed-chunk-53)Stocks Removed by the Subjective Indicators
 </caption>
 <thead>
 <tr>
@@ -1088,66 +1236,21 @@ NVDA
 </div>
 </div>
 <div id="technical-indicators-construction-技术指标搭建" class="section level2 hasAnchor" number="3.3">
-<h2><span class="header-section-number">3.3</span> Technical Indicators Construction 技术指标搭建<a href="base-model-construction-基础模型搭建.html#technical-indicators-construction-技术指标搭建" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<h2 class="hasAnchor"><span class="header-section-number">3.3</span> Technical Indicators Construction 技术指标搭建<a href="#technical-indicators-construction-技术指标搭建" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>**END HERE*</p>
 </div>
 </div>
+<!--bookdown:body:end-->
             </section>
 
           </div>
         </div>
       </div>
-<a href="investment-strategy-outlook-投资策略及模型规划.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-
+<!--bookdown:link_prev-->
+<!--bookdown:link_next-->
     </div>
   </div>
-<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
-<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
-<script>
-gitbook.require(["gitbook"], function(gitbook) {
-gitbook.start({
-"sharing": {
-"github": false,
-"facebook": true,
-"twitter": true,
-"linkedin": false,
-"weibo": false,
-"instapaper": false,
-"vk": false,
-"whatsapp": false,
-"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
-},
-"fontsettings": {
-"theme": "white",
-"family": "sans",
-"size": 2
-},
-"edit": {
-"link": "https://github.com/yihuahuang1/multi-asset-strategy/edit/master/%s",
-"text": "Edit"
-},
-"history": {
-"link": null,
-"text": null
-},
-"view": {
-"link": null,
-"text": null
-},
-"download": null,
-"search": false,
-"toc": {
-"collapse": "subsection"
-}
-});
-});
-</script>
+<!--bookdown:config-->
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>
