@@ -1,9 +1,9 @@
---- 
-title: "Multi-asset Investment strategy Using Quantitative Models 多资产策略量化模型"
+---
+title: "Multi-asset Investment Strategy Using Quantitative Models 多资产策略量化模型"
 author: "Albert Huang"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
-# output: bookdown::gitbook
+#output:bookdown::gitbook
 documentclass: book
 bibliography: [book.bib, packages.bib]
 biblio-style: apalike
@@ -25,7 +25,6 @@ editor_options:
     wrap: sentence
 description: "THIS IS THE DESCRIP PART on index."
 ---
+# Homepage{-}
 
-# Multi-asset Investment strategy Using Quantitative Models 多资产策略量化模型 {-}
-
-Welcome to the Homepage of Global Multi-asset Portfolio Strategy ebook. 
+Insert gif and pnc for multi-asset multi-strategy

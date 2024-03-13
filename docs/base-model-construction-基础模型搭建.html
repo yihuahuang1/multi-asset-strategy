@@ -99,10 +99,10 @@
 <li class="chapter" data-level="3.1" data-path="base-model-construction-基础模型搭建.html"><a href="base-model-construction-基础模型搭建.html#intro-on-base-model-design-and-construction-模型设计搭建概要"><i class="fa fa-check"></i><b>3.1</b> Intro on (Base) Model Design and Construction 模型设计搭建概要</a></li>
 <li class="chapter" data-level="3.2" data-path="base-model-construction-基础模型搭建.html"><a href="base-model-construction-基础模型搭建.html#portfolio-specific-subjective-indicators-其他组合相关过滤指标"><i class="fa fa-check"></i><b>3.2</b> Portfolio-specific Subjective Indicators 其他组合相关过滤指标</a>
 <ul>
-<li class="chapter" data-level="3.2.1" data-path="base-model-construction-基础模型搭建.html"><a href="base-model-construction-基础模型搭建.html#section"><i class="fa fa-check"></i><b>3.2.1</b> </a></li>
-<li class="chapter" data-level="3.2.2" data-path="base-model-construction-基础模型搭建.html"><a href="base-model-construction-基础模型搭建.html#section-1"><i class="fa fa-check"></i><b>3.2.2</b> </a></li>
-<li class="chapter" data-level="3.2.3" data-path="base-model-construction-基础模型搭建.html"><a href="base-model-construction-基础模型搭建.html#section-2"><i class="fa fa-check"></i><b>3.2.3</b> </a></li>
-<li class="chapter" data-level="3.2.4" data-path="base-model-construction-基础模型搭建.html"><a href="base-model-construction-基础模型搭建.html#section-3"><i class="fa fa-check"></i><b>3.2.4</b> </a></li>
+<li class="chapter" data-level="3.2.1" data-path="base-model-construction-基础模型搭建.html"><a href="base-model-construction-基础模型搭建.html#subjective-indicator-no.1-market-cap-7-billion"><i class="fa fa-check"></i><b>3.2.1</b> <span style="color:blue">Subjective indicator No.1: Market Cap &gt; $ 7 billion</span></a></li>
+<li class="chapter" data-level="3.2.2" data-path="base-model-construction-基础模型搭建.html"><a href="base-model-construction-基础模型搭建.html#subjective-indicator-no.2-average-weekly-volume-1-million"><i class="fa fa-check"></i><b>3.2.2</b> <span style="color:blue">Subjective indicator No.2: Average Weekly Volume &gt; 1 million</span></a></li>
+<li class="chapter" data-level="3.2.3" data-path="base-model-construction-基础模型搭建.html"><a href="base-model-construction-基础模型搭建.html#subjective-indicator-no.3-daily-return-nless--15"><i class="fa fa-check"></i><b>3.2.3</b> <span style="color:blue">Subjective indicator No.3: Daily Return <span class="math inline">\(\nless -15\%\)</span></span></a></li>
+<li class="chapter" data-level="3.2.4" data-path="base-model-construction-基础模型搭建.html"><a href="base-model-construction-基础模型搭建.html#subjective-indicator-no.4-annualized-volatility-ngtr-100"><i class="fa fa-check"></i><b>3.2.4</b> <span style="color:blue">Subjective indicator No.4: Annualized volatility <span class="math inline">\(\ngtr 100\%\)</span></span></a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="technical-indicators-construction-技术指标搭建.html"><a href="technical-indicators-construction-技术指标搭建.html"><i class="fa fa-check"></i><b>4</b> Technical Indicators Construction 技术指标搭建</a>
@@ -663,8 +663,8 @@ TSLA
 <li><span class="math inline">\(\text{Annualized Volatility}\ngtr 100\%\)</span>.</li>
 </ol>
 <p>翻译.</p>
-<div id="section" class="section level3 hasAnchor" number="3.2.1">
-<h3><span class="header-section-number">3.2.1</span> <a href="base-model-construction-基础模型搭建.html#section" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="subjective-indicator-no.1-market-cap-7-billion" class="section level3 hasAnchor" number="3.2.1">
+<h3><span class="header-section-number">3.2.1</span> <span style="color:blue">Subjective indicator No.1: Market Cap &gt; $ 7 billion</span><a href="base-model-construction-基础模型搭建.html#subjective-indicator-no.1-market-cap-7-billion" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>The program gathers the most up-to-date (value at close on the last trading day) <em>market cap</em> (<code>market_cap</code>) for each company, the stocks with a latest market cap smaller than 7 billion USD will be eliminated (from the stock selection list).</p>
 <p>A market cap less than $7 billion, indicates the stock is more growth in nature, and with less analyst coverage. ‘Growth stocks’ have the growth potential, however tend to be more volatile. To match the investment goals/portfolio needs, satisfy internal RM and compliance guidelines, and actively controlling the drawdown and down-side risks; the model therefore in advance, eliminates these stocks and label them as ‘inviable’ investment options.</p>
 <p>翻译</p>
@@ -673,8 +673,8 @@ TSLA
 <p>Above output shows the <code>cap_remove_list</code>, i.e. the stocks removed from the <code>stockdata</code> dataset due to its <em>market cap</em> was smaller than 7 billion USD (<span class="math inline">\(7\times 10^9\)</span>) some time during last year, to meet internal RM guidelines, and actively manage the potential downside risks and return fluctuation (drawdown) issues.</p>
 <p>翻译</p>
 </div>
-<div id="section-1" class="section level3 hasAnchor" number="3.2.2">
-<h3><span class="header-section-number">3.2.2</span> <a href="base-model-construction-基础模型搭建.html#section-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="subjective-indicator-no.2-average-weekly-volume-1-million" class="section level3 hasAnchor" number="3.2.2">
+<h3><span class="header-section-number">3.2.2</span> <span style="color:blue">Subjective indicator No.2: Average Weekly Volume &gt; 1 million</span><a href="base-model-construction-基础模型搭建.html#subjective-indicator-no.2-average-weekly-volume-1-million" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>The program first computes the average weekly (trading) <code>Volume</code>, the stock with an <code>average volume</code> <strong>smaller than 1 million</strong> some time during the last year, will be eliminated (from the stock list).</p>
 <p>A daily (average) trading volume of 1 million or less, indicates the stock was traded inactively in relative terms. To satisfy internal RM and compliance guidelines, and avoid any liquidity risks; the model therefore in advance, eliminates these stocks and label them as ‘inviable’ investment options.</p>
 <p>翻译.</p>
@@ -858,8 +858,8 @@ TSLA
 <p>Above output shows the <code>volume_remove_list</code>, i.e. the stocks removed from the <code>stockdata</code> dataset due to its <code>average volume</code> was smaller than 1 million (<span class="math inline">\(1\times 10^6\)</span>) some time during last year, to avoid potential liquidity issues.</p>
 <p>翻译</p>
 </div>
-<div id="section-2" class="section level3 hasAnchor" number="3.2.3">
-<h3><span class="header-section-number">3.2.3</span> <a href="base-model-construction-基础模型搭建.html#section-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="subjective-indicator-no.3-daily-return-nless--15" class="section level3 hasAnchor" number="3.2.3">
+<h3><span class="header-section-number">3.2.3</span> <span style="color:blue">Subjective indicator No.3: Daily Return <span class="math inline">\(\nless -15\%\)</span></span><a href="base-model-construction-基础模型搭建.html#subjective-indicator-no.3-daily-return-nless--15" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>The program first computes the <em>daily return</em> (<code>price_pctchange</code>), i.e. the <em>daily price</em> (<code>adjusted</code>) change in percentages for each stock. Any stock with a ‘price drop’ of more than 15% in any trading day during the last year will be eliminated (from the stock selection list). FYI, the program utilizes the daily <em>adjusted close price</em> (<code>adjusted</code>) as the <em>daily price</em> for each stock inputs to the model, which they are adjusted for any dilutions to the shares, i.e. accounts for any dividend distributions and applicable share splits.</p>
 <p>A daily price change of -15% indicates extreme short-term price down movement. To proactively manage (max) drawdown for our portfolio, the model therefore in advance, eliminates these stocks, which exhibited significant short-term downside risks during last year.</p>
 <p>翻译</p>
@@ -1044,8 +1044,8 @@ TSLA
 <p>Above output shows the <code>prcpct_remove_list</code>, i.e. the stocks removed from the <code>stockdata</code> dataset due to its <em>daily return</em> was smaller than <span class="math inline">\(-15\%\)</span>, some time during last year, to manage short-term drawdown.</p>
 <p>翻译</p>
 </div>
-<div id="section-3" class="section level3 hasAnchor" number="3.2.4">
-<h3><span class="header-section-number">3.2.4</span> <a href="base-model-construction-基础模型搭建.html#section-3" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="subjective-indicator-no.4-annualized-volatility-ngtr-100" class="section level3 hasAnchor" number="3.2.4">
+<h3><span class="header-section-number">3.2.4</span> <span style="color:blue">Subjective indicator No.4: Annualized volatility <span class="math inline">\(\ngtr 100\%\)</span></span><a href="base-model-construction-基础模型搭建.html#subjective-indicator-no.4-annualized-volatility-ngtr-100" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>The program first computes the (implied) <em>Annualized Volatility</em> from the <em>daily return</em>s (<code>price_pctchange</code>) for each stock, using <span class="math inline">\(\text{Annualized Volatility}=\Delta(\text{Daily Price})\cdot \sqrt{252}\)</span>, assuming 252 trading days every year. Any stock with an implied annual volatility of more than 100% will be removed from the selection (process).</p>
 <p>Implied volatility (<code>annual_volatility</code>) greater than 100% indicates extreme volatile price movements at some point during the last year. To actively manage potential short-term and long-term (portfolio) risks, and utilizing an equilibrium investment strategy; with the potential volatile stocks are exhibited, they will be eliminated in advance for that purpose.</p>
 <p>翻译</p>

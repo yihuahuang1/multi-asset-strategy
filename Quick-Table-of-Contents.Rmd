@@ -1,8 +1,15 @@
 # Quick Table of Contents 快速索引{-}  
 
-sss
+* [Investment Strategy Outlook 投资策略及模型规划] for **Investment Thesis** and **Model Planning & Considerations** [`Stock Selection Model (Base)`]   
 
+* [(Base) Model Construction 基础模型搭建] for **Model Construction** steps and the **Subjective Filters** [`Stock Selection Model (Base)`]  
 
-Cross-referencing (Section \@ref(2.1 Research Objectives)) for stock selection model
+* [Technical Indicators Construction 技术指标搭建] for the construction of all **Technical Indicators** used [`Stock Selection Model (Base)`]  
 
-\@ref(2.1) for stock selection model
+* [Selecting Effective Technical Indicators 选取有效的技术指标] for the **dynamically** selection process of the **significant** **technical indicators** [`Stock Selection Model (Base)`]  
+
+* [(Base) Model Performance 模型选股表现] for the `base` **model performance** and backtest results [`Stock Selection Model (Base)`]  
+
+* [Risk Disclosure 风险披露] for the model and portfolio **risks** [`Stock Selection Model (Base)`]  
+
+* [Appendix 附录] for the codes and our resources [`Stock Selection Model (Base)`] 

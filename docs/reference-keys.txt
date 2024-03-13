@@ -71,3 +71,10 @@ tab:unnamed-chunk-52
 tab:unnamed-chunk-15
 tab:unnamed-chunk-20
 tab:unnamed-chunk-29
+subjective-indicator-no.1-market-cap-7-billion
+subjective-indicator-no.2-average-weekly-volume-1-million
+subjective-indicator-no.3-daily-return-nless--15
+subjective-indicator-no.4-annualized-volatility-ngtr-100
+technical-indicator-8-volume
+technical-indicator-9-price
+appendix-附录

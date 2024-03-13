@@ -240,9 +240,9 @@ In general, the program is set to perform computations and generate tradings sig
 
 翻译. 
 
-## Technical Indicator 1: Simple Moving Avaerage (SMA) 
+## <span style="color:blue">Technical Indicator 1: Simple Moving Avaerage (SMA)</span> 
 
-(Includes `tsignal1`, `tsignal2`, and `tsignal3`)  
+Includes `tsignal1`, `tsignal2`, and `tsignal3`  
 
 翻译
 
@@ -491,9 +491,9 @@ kbl(result_231b, booktabs = T, linesep = "", longtable = T,
   number = "Includes tsignal1, tsignal2, tsignal3, tsignal3a and tsignal3b.")
 ```
 
-## Technical Indicator 2: Exponential Moving Average (EMA)
-  
-(Includes `tsignal4`, `tsignal5`, and `tsignal6`)  
+## <span style="color:blue">Technical Indicator 2: Exponential Moving Average (EMA)</span>
+
+Includes `tsignal4`, `tsignal5`, and `tsignal6`  
 
 * Intro- **EMA**: 
 
@@ -773,11 +773,14 @@ kbl(result_232b, booktabs = T, linesep = "", longtable = T,
 ```
 
 
-## Technical Indicator 3: Moving Average Convergence Divergence (MACD)    
+## <span style="color:blue">Technical Indicator 3: Moving Average Convergence Divergence (MACD)</span>
 
+`In Progress`
+  
+## <span style="color:blue">Technical Indicator 4: Relative Strength Index (RSI)</span>
 
+`In Progress`
 
-## Technical Indicator 4: Relative Strength Index (RSI)  
 
 The RSI (Relative Strength Index) is a momentum oscillator that measures the speed and change of price movements.
 It ranges from 0 to 100 and is used to identify overbought or oversold conditions in a market.
@@ -787,34 +790,19 @@ Note: The exclusion of machine learning.
 Technical.
 Example RSI Fundamental example ICIR to dig significant momentum factors.  
 
-
-
-```{r test1}
-
-#
-```
-
-```{r test2}
-#
-```
-
-```{r test3}
-#
-```
-
-## Technical Indicator 5: Bollinger Band (BB) 
+## <span style="color:blue">Technical Indicator 5: Bollinger Band (BB)</span>
 
 `In Progress`
 
-## Technical Indicator 6: 2-day Momentum (2-day Mom)  
+## <span style="color:blue">Technical Indicator 6: 2-day Momentum (2-day Mom)</span>
 
 `In Progress`
 
-## Technical Indicator 7: Price Volume Trend (PVT) 
+## <span style="color:blue">Technical Indicator 7: Price Volume Trend (PVT)</span>
 
 `In Progress`
 
-### Volume
+## <span style="color:blue">Technical Indicator 8: Volume</span>
 
 `In Progress`
 
@@ -822,7 +810,7 @@ One of the most common basic indicators traders examine is the trading volume.
 Trading volume is an indication for the ‘activeness’ of a financial instrument.
 Depending on the financial instruments, trading volume can be measured either using the number of stocks traded or number of contracts with changed ownerships.
 
-### Price
+## <span style="color:blue">Technical Indicator 9: Price</span>
 
 `In Progress`
 

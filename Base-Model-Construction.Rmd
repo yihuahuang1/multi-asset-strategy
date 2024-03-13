@@ -209,7 +209,7 @@ Thus, we set the following **subjective indicators** to meet the strategy needs 
 
 翻译.  
 
-### \textcolor{blue}{Subjective indicator No.1: Market Cap > \$ 7 billion}   
+### <span style="color:blue">Subjective indicator No.1: Market Cap > \$ 7 billion</span>  
 
 The program gathers the most up-to-date (value at close on the last trading day) *market cap* (`market_cap`) for each company, the stocks with a latest market cap smaller than 7 billion USD will be eliminated (from the stock selection list).  
 
@@ -241,7 +241,7 @@ Above output shows the `cap_remove_list`, i.e. the stocks removed from the `stoc
 
 翻译 
 
-### \textcolor{blue}{Subjective indicator No.2: Average Weekly Volume > 1 million}        
+### <span style="color:blue">Subjective indicator No.2: Average Weekly Volume > 1 million</span>  
 
 The program first computes the average weekly (trading) `Volume`, the stock with an `average volume` **smaller than 1 million** some time during the last year, will be eliminated (from the stock list).  
 
@@ -297,7 +297,7 @@ Above output shows the `volume_remove_list`, i.e. the stocks removed from the `s
 
 翻译 
 
-### \textcolor{blue}{Subjective indicator No.3: Daily Return $\nless -15\%$}  
+### <span style="color:blue">Subjective indicator No.3: Daily Return $\nless -15\%$</span> 
 
 The program first computes the *daily return* (`price_pctchange`), i.e. the *daily price* (`adjusted`) change in percentages for each stock. Any stock with a 'price drop' of more than 15\% in any trading day during the last year will be eliminated (from the stock selection list). FYI, the program utilizes the daily *adjusted close price* (`adjusted`) as the *daily price* for each stock inputs to the model, which they are adjusted for any dilutions to the shares, i.e. accounts for any dividend distributions and applicable share splits.    
 
@@ -355,7 +355,7 @@ Above output shows the `prcpct_remove_list`, i.e. the stocks removed from the `s
 
 翻译
 
-### \textcolor{blue}{Subjective indicator No.4: Annualized volatility $\ngtr 100\%$}  
+### <span style="color:blue">Subjective indicator No.4: Annualized volatility $\ngtr 100\%$</span>
 
 The program first computes the (implied) *Annualized Volatility* from the *daily return*s  (`price_pctchange`) for each stock, using $\text{Annualized Volatility}=\Delta(\text{Daily Price})\cdot \sqrt{252}$, assuming 252 trading days every year. Any stock with an implied annual volatility of more than 100\% will be removed from the selection (process). 
 
