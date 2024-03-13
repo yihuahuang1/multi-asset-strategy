@@ -23,7 +23,7 @@
 <meta name="author" content="Albert Huang" />
 
 
-<meta name="date" content="2024-03-12" />
+<meta name="date" content="2024-03-13" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -56,70 +56,6 @@
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
 
-<style type="text/css">
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { color: #008000; } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { color: #008000; font-weight: bold; } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-</style>
 
 <style type="text/css">
   
@@ -144,7 +80,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="./">Multi-Asset Portfolio Strategy</a></li>
 
 <li class="divider"></li>
-<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> INTRO ON GTAA</a>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> output: bookdown::gitbook</a>
 <ul>
 <li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#gtaa-specificis"><i class="fa fa-check"></i><b>1.1</b> GTAA SPECIFICIS</a></li>
 <li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#multiple-assets"><i class="fa fa-check"></i><b>1.2</b> MULTIPLE ASSETS</a></li>
@@ -283,26 +219,39 @@ History will repeat itself (Example: momentum trading strategy and mean reversio
 <p>With the research goal in building a portfolio with maximum long-term risk-adjusted returns while controlling the maximum drawdown, we certainly need to invest in a pool stocks with the largest winning probability in gaining positive investment returns and with the least amount of volatility.</p>
 <p>By acknowledging the usefulness and limitations of fundamental and technical analysis, we can design a quantitative model based on these analytically methodologies to build a portfolio which best suit our preset investment goals and risk preferences.</p>
 <p>翻译</p>
-<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;border-bottom: 0;">
+<table class="table" style="margin-left: auto; margin-right: auto;border-bottom: 0;">
 <caption>
-<span id="tab:unnamed-chunk-3">Table 2.1: </span>EMA Trading Signals (TSLA.US)
+<span id="tab:unnamed-chunk-3">Table 2.1: </span>Common Indicators and Factors in Equity Research
 </caption>
 <thead>
 <tr>
 <th style="text-align:left;">
-a
+Factor Type
 </th>
 <th style="text-align:left;">
-b
+Factor Categories
 </th>
 <th style="text-align:left;">
-c
+Sample List of Indicators
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align:left;font-weight: bold;">
+技术类指标(Technical Indicators)
+</td>
+<td style="text-align:left;font-weight: bold;">
+均线指标类因子
+(Moving Average Factor)
+</td>
+<td style="text-align:left;">
+Simple Moving Average (SMA); Exponential Moving Average (EMA); Weighted Moving Average (WMA); Double Exponential Moving Average (DEMA); Triple Exponential Moving Average (TEMA); Gann High Low Activator (HiLo); Hull Exponential Moving Average (HMA); Linear Regression Moving Average (LINREG); Symmetric Weighted Moving Average (SMWA); Variable Index Dynamic Average (VIDYA); Volume Weighted Moving Average (VWMA); Zero Lag Moving Average (ZLMA); and etc.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+NA
 </td>
 <td style="text-align:left;font-weight: bold;">
 成交量类因子
@@ -314,6 +263,7 @@ Accumulation/Distribution Oscillator (ADOSC); Chaikin Money Flow (CMF); Price Vo
 </tr>
 <tr>
 <td style="text-align:left;font-weight: bold;">
+NA
 </td>
 <td style="text-align:left;font-weight: bold;">
 动量类因子
@@ -325,6 +275,7 @@ Rate of Change (ROC); Awesome Oscillator (AO); Absolute Price Oscillator (APO); 
 </tr>
 <tr>
 <td style="text-align:left;font-weight: bold;">
+NA
 </td>
 <td style="text-align:left;font-weight: bold;">
 趋势类因子
@@ -336,6 +287,7 @@ Average Directional Movement Index (ADX); Archer Moving Averages Trends (AMAT); 
 </tr>
 <tr>
 <td style="text-align:left;font-weight: bold;">
+NA
 </td>
 <td style="text-align:left;font-weight: bold;">
 波动性类因子
@@ -347,7 +299,7 @@ Historical Volatility (HV); Implied Volatility (IV); beta (<span class="math inl
 </tr>
 <tr>
 <td style="text-align:left;font-weight: bold;">
-Fundamental Indicators (基本面指标)
+基本面类指标(Fundamental Indicators)
 </td>
 <td style="text-align:left;font-weight: bold;">
 基本面类因子 (经营效率，盈利能力，成长性和估值，现金流，财务质量)
@@ -359,6 +311,7 @@ Asset Turnover Ratio (ATR); Inventory Turnover Ratio (ITR); Account Receivable T
 </tr>
 <tr>
 <td style="text-align:left;font-weight: bold;">
+NA
 </td>
 <td style="text-align:left;font-weight: bold;">
 风格因子
@@ -370,7 +323,7 @@ Size; Dividend; Sentiment; etc.
 </tr>
 <tr>
 <td style="text-align:left;font-weight: bold;">
-Portfolio Indicators (组合类指标)
+组合表现类指标((Portfolio Performance Indicators)
 </td>
 <td style="text-align:left;font-weight: bold;">
 投资策略因子
@@ -389,12 +342,7 @@ Information Ratio; Maximum Drawdown (MDD); etc.
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup></sup> Output 2.3.2.b: Last 8 rows are shown.
-</td>
-</tr>
-<tr>
-<td style="padding: 0; " colspan="100%">
-<sup>1</sup> Includes tsignal4, tsignal5, tsignal6, tsignal6a and tsignal6b.
+<sup></sup> List of Common indicators and factors in Equity Research are shown above, not all factors above are used in this study.
 </td>
 </tr>
 </tfoot>

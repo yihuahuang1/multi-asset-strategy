@@ -71,27 +71,27 @@ library(quantmod)
 library(rvest) 
 library(xts)
 library(TTR)
+library(blotter)
 library(rvest)
+library(quantstrat)
 library(zoo)
 library(knitr)
 library(kableExtra)
+library(readxl)
 # nasdaq api 44D9F6_XzqEy8xstEuxb
 ```
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.pos='H'}
-allfactortable <- read.csv("factor_list.csv")
+allfactortable <- read_excel("factor_list.xlsx")
 
 # Display factors (both tech and fundamental) 
-kbl(allfactortable, booktabs = T, linesep = "", longtable = T,
-    digits = 1, caption = "EMA Trading Signals (TSLA.US)", 
+kbl(allfactortable, booktabs = T, linesep = "", digits = 1, 
+    caption = "Common Indicators and Factors in Equity Research", 
     format.args = list(big.mark = ",", scientific = FALSE),
-    col.names = c("a","b","c")) %>%
-  kable_styling(latex_options = c("striped", "scale_down",
-                                  "HOLD_position"),
-                full_width = F) %>%
+    col.names = c("Factor Type","Factor Categories","Sample List of Indicators")) %>%
+  kable_styling(latex_options = c("striped", "scale_down")) %>%
   column_spec(c(1:2), bold = T) %>%
-  footnote(general = "Output 2.3.2.b: Last 8 rows are shown.",
-  number = "Includes tsignal4, tsignal5, tsignal6, tsignal6a and tsignal6b.")
+  footnote(general = "List of Common indicators and factors in Equity Research are shown above, not all factors above are used in this study.")
 ```
 
 

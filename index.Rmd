@@ -26,23 +26,4 @@ editor_options:
 description: "THIS IS THE DESCRIP PART on index."
 ---
 
-
-
-
-# INTRO ON GTAA  
-
-`In Progress`
-
-## GTAA SPECIFICIS
-
-`In Progress`
-
-## MULTIPLE ASSETS  
-
-`In Progress`
-
-## RESERACH
-
-`In Progress`
-
-
+Welcome to the Homepage of Global Multi-asset Portfolio Strategy ebook. 
