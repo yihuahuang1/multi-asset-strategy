@@ -6,6 +6,7 @@ rmd_files: [
   "index.Rmd",
   "Quick-Table-of-Contents.Rmd",
   "Multi-asset-Investment-Strategy.Rmd",
+  "shinyapptest.Rmd",
   "Investment-Strategy-Outlook.Rmd",
   "Base-Model-Construction.Rmd",
   "Technical-Indicators-Construction.Rmd",

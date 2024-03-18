@@ -1,21 +1,4 @@
-# Technical Indicators Construction 技术指标搭建
-
-```{r message=FALSE, warning=FALSE, include=FALSE}
-source_rmd <- function(file, local = FALSE, ...){
-  options(knitr.duplicate.label = 'allow')
-
-  tempR <- tempfile(tmpdir = ".", fileext = ".R")
-  on.exit(unlink(tempR))
-  knitr::purl(file, output=tempR, quiet = TRUE)
-
-  envir <- globalenv()
-  source(tempR, local = envir, ...)
-}
-``` 
-
-```{r message=FALSE, warning=FALSE, include=FALSE}
-source_rmd("Base-Model-Construction.Rmd")
-```
+# Technical Indicators Construction 技术指标搭建  
 
 As previously defined, technical analysis is the recording of the actual trading history, to identify potential patterns/trends with the assumption that similiar behavior will repeat in the future. A **technical indicator** is basically a mathematical representation and manipulation of the basic historical raw trading data and statistics of an asset. 
 
@@ -35,6 +18,24 @@ In general, the program is set to perform computations and generate tradings sig
 <Insert a chart with all indicators (sig or not sig) and character them as type of indicators mom volume etc>
 
 翻译. 
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+source_rmd <- function(file, local = FALSE, ...){
+  options(knitr.duplicate.label = 'allow')
+
+  tempR <- tempfile(tmpdir = ".", fileext = ".R")
+  on.exit(unlink(tempR))
+  knitr::purl(file, output=tempR, quiet = TRUE)
+
+  envir <- globalenv()
+  source(tempR, local = envir, ...)
+}
+``` 
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+source_rmd("Base-Model-Construction.Rmd")
+```
+
 
 ## <span style="color:blue">Technical Indicator 1: Simple Moving Avaerage (SMA)</span> 
 
