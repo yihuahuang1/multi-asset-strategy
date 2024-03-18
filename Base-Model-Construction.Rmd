@@ -166,12 +166,12 @@ sp_500_stock_list
 # Full data part data intake for loop 
 ```
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+```{r message=FALSE, warning=FALSE, include=FALSE}
 # Data cleanup & add marketcap column to the main dataframe
 mega7data_modified <- 
   mega7data %>%
   inner_join(mega7mcap, join_by(symbol == Stock)) %>%
-  rename(market_cap = Marketcap) %>%
+  rename(marketcap = Marketcap) %>%
   select(!X.x) %>% 
   select(!X.y) 
 ```  

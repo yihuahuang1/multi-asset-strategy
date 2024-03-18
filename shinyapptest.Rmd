@@ -14,47 +14,52 @@ library(plotly)
 library(DT)
 library(dplyr)
 library(ggplot2)
+```
 
+```{r}
 # Data Intake
-mega7data = read.csv("mega7tidy.csv")
-mega7mcap = read.csv("mega7marketcap.csv")
+mega7data <- read.csv("mega7tidy.csv")
+mega7mcap <- read.csv("mega7marketcap.csv")
 
 mega7data_modified <- 
   mega7data %>%
   inner_join(mega7mcap, join_by(symbol == Stock)) %>%
-  rename(market_cap = Marketcap) %>%
+  rename(marketcap = Marketcap) %>%
   select(!X.x) %>% 
   select(!X.y) 
+mega7data_modified$marketcap <- round(mega7data_modified$marketcap, 0)
 ```
 
 ```{r}
-# Load necessary libraries
-
 # Define UI
 ui22 <- fluidPage(
-    titlePanel("Section 2 Interactive Output Webpage"),
+    titlePanel("Section 2 Interactive Output Webpage 第二部分交互结果展示"),
     
     
     sidebarLayout(
         sidebarPanel(
-            selectInput("symbol", "Symbol", choices = unique(mega7data_modified$symbol)),
-            dateRangeInput("dateRange", "Date Range", 
+            selectInput("symbol", "Symbol 代码", choices = unique(mega7data_modified$symbol)),
+            dateRangeInput("dateRange", "Date Range 时间范围", 
                            start = min(mega7data_modified$date), end = max(mega7data_modified$date)),
-            checkboxGroupInput("variables", "Variables", 
-                               choices = c("adjusted" = "adjusted", "close", "high", "low", "open",
-                                           "volume"="volume","market_cap"="market cap"),
+            checkboxGroupInput("variables", "Variables 指标 (可多选)", 
+                               choices = c("adjusted" = "adjusted", "high", "low","open", "close",
+                                           "volume"="volume","market cap (USD)"="marketcap"),
                                selected = c("adjusted","volume"))
         ),
         mainPanel(
           tabsetPanel(
-            tabPanel("Data Table", DTOutput("table")),
-            tabPanel("Price Chart", plotlyOutput("pricePlot")),
-            tabPanel("Volume Chart", plotlyOutput("volumePlot"))
-          )
+            tabPanel("Data Table 数据", DTOutput("table")),
+            tabPanel("Price Chart 股价", plotlyOutput("pricePlot")),
+            tabPanel("Volume Chart 交易量", plotlyOutput("volumePlot"))
+          ),
+          verbatimTextOutput("graphDescription1"),
+          verbatimTextOutput("graphDescription2")  # Text output for graph description
         )
     )
 )
+```
 
+```{r}
 # Define server logic
 server22 <- function(input, output) {
     # Reactive expression for filtered data for the table
@@ -71,7 +76,7 @@ server22 <- function(input, output) {
     req(input$symbol, input$dateRange)
     data <- mega7data_modified %>%
       filter(symbol == input$symbol, date >= input$dateRange[1], date <= input$dateRange[2]) %>%
-      select(date, adjusted, volume)  # Always include price and volume for the graphs
+      select(date, adjusted, volume, high, low, open)  # Always include price and volume for the graphs
     data$date <- as.Date(data$date)
     data
     })
@@ -80,9 +85,9 @@ server22 <- function(input, output) {
       datatable(
         filteredData(), 
         options = list(pageLength = 10, autoWidth = TRUE),
-        caption = htmltools::tags$caption(style = "caption-side: top; font-size: 250%;",
-                                          "Stock Price/Volume Data (raw)")) %>%
-        formatRound(columns = which(names(filteredData()) %in% input$variables), digits = 2) %>%
+        caption = htmltools::tags$caption(style = "caption-side: top; font-size: 180%;",
+                                          "Stock Price/Volume Data (raw) 原始量价数据")) %>%
+        formatRound(columns = which(names(filteredData()) %in% input$variables), digits = 1) %>%
         formatStyle("volume", fontWeight = "bold",
                     `data-thousands` = ",", `data-type` = "formatted-num") %>%
         formatRound(columns = which(names(filteredData()) == "volume"), digits = 0) %>%
@@ -90,20 +95,36 @@ server22 <- function(input, output) {
     })
   # Render the plot
     output$pricePlot <- renderPlotly({
-        # Assuming you are plotting price and volume for simplicity
         data <- filteredGraphData()
+     
+        # Constructing the graph 
 
-        # Constructing the graph (example with ggplot2 and plotly)
-        p <- ggplot(data, aes(x = date, y = adjusted)) +
-            geom_line(color = 'blue') +
-            scale_x_date(date_breaks = "3 month", date_labels = "%b %Y") +
-            ggtitle(paste("Stock Price for", input$symbol)) +
-            xlab("Date") + 
-            ylab("Adjusted Close Price (USD)") + 
-            theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-            theme_bw()
 
-        ggplotly(p)
+    p <- ggplot(data, aes(x = date, y = adjusted, 
+                          text = paste("Date: ", date, "<br>",
+                                       "Adjusted Close: ", adjusted, "<br>",
+                                       "Open: ", open, "<br>",
+                                       "High: ", high, "<br>",
+                                       "Low: ", low, "<br>",
+                                       "Volume: ", volume))) +
+      geom_point(color = 'green', size = 1) +  # Make green dots smaller
+      scale_x_date(date_breaks = "3 month", date_labels = "%b %Y") +
+      ggtitle(paste("Stock Price for", input$symbol, "US Equity: 日收盘价")) +
+      xlab("Date 日期") + 
+      ylab("Adjusted Close Price (USD) 日收盘价") + 
+      theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+      theme_bw()
+
+    # Convert ggplot to plotly
+    plotly_chart <- ggplotly(p, tooltip = "text")
+    
+    # Add line chart as a separate trace
+    plotly_chart <- plotly_chart %>%
+      add_trace(x = data$date, y = data$adjusted, 
+                type = 'scatter', mode = 'lines', line = list(color = 'blue'))
+
+    plotly_chart
+    
     })
     output$volumePlot <- renderPlotly({
         data <- filteredGraphData()
@@ -111,20 +132,28 @@ server22 <- function(input, output) {
 
         v <- ggplot(data, aes(x = date, y = volume)) +
             geom_bar(stat = 'identity', fill = 'deepskyblue3') +
-            scale_x_date(date_breaks = "3 month", date_labels = "%b %Y") +
-            ggtitle(paste("Volume for", input$symbol)) +
-            xlab("Date") +
-            ylab("Volume in USD") +
+            scale_x_date(date_breaks = "2 month", date_labels = "%b %Y") +
+            ggtitle(paste("Volume for", input$symbol, "US Equity: 日交易量")) +
+            xlab("Date 日期") +
+            ylab("Volume in USD 日交易量") +
             theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
             theme_minimal()
 
         ggplotly(v)
     })
+  # Render the graph description text
+  output$graphDescription1 <- renderText({
+"1. Circle on the plot will zoom in to the selected period."
+  })
+  output$graphDescription2 <- renderText({
+"2. Double click on the plot to restore axis."
+  })
 }
+```
 
+```{r}
 # Run the application 
 shinyApp(ui22, server22)
-
 ```
 
 
