@@ -1,5 +1,11 @@
 # Quick Table of Contents 快速索引{-}  
 
+#### <span style="font-weight:700;font-size:17px">Into on Global Multi-asset Strategy 全球多资产策略</span> {-} 
+
+* [Introduction to the GTAA] for the overview on the Global Tactical Asset Allocation Strategy   [`Multi-asset Strategy Overview`]   
+
+#### <span style="font-weight:700;font-size:17px">The Base Model: a Technical Signaling Tool for Stock Selection 基础模型：技术指标选股工具</span> {-} 
+
 * [Investment Strategy Outlook 投资策略及模型规划] for **Investment Thesis** and **Model Planning & Considerations** [`Stock Selection Model (Base)`]   
 
 * [(Base) Model Construction 基础模型搭建] for **Model Construction** steps and the **Subjective Filters** [`Stock Selection Model (Base)`]  
@@ -10,6 +16,15 @@
 
 * [(Base) Model Performance 模型选股表现] for the `base` **model performance** and backtest results [`Stock Selection Model (Base)`]  
 
-* [Risk Disclosure 风险披露] for the model and portfolio **risks** [`Stock Selection Model (Base)`]  
 
-* [Appendix 附录] for the codes and our resources [`Stock Selection Model (Base)`] 
+#### <span style="font-weight:700;font-size:17px">The Complete Model: a Comprehensive Stock Selection Model: Using Quantitative Indicators 完整模型：基于量化指标的全面选股工具</span> {-} 
+
+`TBD`
+
+
+* [Risk Disclosure 风险披露] for the model and portfolio **risks** [`Multi-asset Strategy Quant Approach`]  
+
+* [Appendix 附录] for the codes and our resources [`Multi-asset Strategy Quant Approach`]   
+
+
+

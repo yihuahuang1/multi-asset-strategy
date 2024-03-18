@@ -1,17 +1,30 @@
-# INTRO ON GTAA {-} 
+# Introduction to the GTAA  {-} 
+
+The **Global Tactical Asset Allocation Strategy(GTAA)** is a top-down global macro strategy that seeks to identify and exploit inefficiencies between markets, regions, countries, and sectors. The research and decision-making process is fundamentally-driven and discretionary, but supported by an extensive quantitative research platform. The Strategy invests across global asset classes, including stocks, bonds, currencies and commodities. (https://www.morganstanley.com/im/en-us/individual-investor/strategies/solutions-and-multi-asset/global-tactical-asset-allocation.html)
 
 `In Progress`
 
-## GTAA SPECIFICIS {-} 
+## GTAA Philosphy {-} 
+
+Asset class selection. An output of this model would be long or short positions in global stocks, global bonds and cash . One can think of global stocks or global bonds as of respective world indices, not necessarily weighted according to market capitalisation. They may also be weighted by GDP or just equally;
+Stock country selection. This model compares country stock markets to each other and results in a dollar-neutral long-short portfolio of equity markets;
+Bond country selection. Ditto for bond markets;
+Tactical currency allocation. This model's recommendations are long and short positions in currencies. These positions add up to zero.(https://thehedgefundjournal.com/global-tactical-asset-allocation/)
 
 `In Progress`
 
-## MULTIPLE ASSETS {-} 
+## Investment Scope {-} 
+
+`In Progress` 
+
+The Global Multi-Asset team believes that global multi-asset class investing presents opportunities to generate excess return due to structural inefficiencies such as home-country bias and the tendency for a majority of investors to focus on security selection. In addition, regions and countries have independent economic drivers, which often give rise to uncorrelated investment opportunities.  We also believe that investors have a tendency to extrapolate current trends into the future, mistaking cyclical dynamics for structural changes, and vice versa.  We therefore invest around major macro-economic turning points, where we think investors are most likely to mis-price assets amid changing dynamics.
+
+## Investment & Research Process {-} 
 
 `In Progress`
 
-## RESERACH {-} 
+The Global Multi-Asset team offers investors access to an investment approach focusing on opportunities arising from macroeconomic changes and structural transformations that have not yet been discounted in valuations. The team’s investment process seeks to identify attractive risk/reward opportunities based on three primary criteria: valuation, fundamental dynamics, and sentiment. The team believes that these three tools are most powerful when used in combination. The team invests in opportunities at the asset class, country, sector and thematic levels, rather than concentrating on individual security selection.  
+
+## Risk Management {-} 
 
 `In Progress`
-
-

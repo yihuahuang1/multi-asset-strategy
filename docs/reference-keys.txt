@@ -78,3 +78,8 @@ subjective-indicator-no.4-annualized-volatility-ngtr-100
 technical-indicator-8-volume
 technical-indicator-9-price
 appendix-附录
+the-base-model-a-technical-signaling-tool-for-stock-selection-基础模型技术指标选股工具
+tab:unnamed-chunk-7
+tab:unnamed-chunk-16
+tab:unnamed-chunk-30
+tab:unnamed-chunk-23

@@ -27,4 +27,4 @@ description: "THIS IS THE DESCRIP PART on index."
 ---
 # Homepage{-}
 
-Insert gif and pnc for multi-asset multi-strategy
+PIC MULTIASSET multi strategy GIF

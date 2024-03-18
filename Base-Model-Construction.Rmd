@@ -14,6 +14,7 @@ library(rvest)
 library(zoo)
 library(knitr)
 library(kableExtra)
+library(plotly)
 # nasdaq api 44D9F6_XzqEy8xstEuxb
 ```
 
@@ -209,7 +210,7 @@ Thus, we set the following **subjective indicators** to meet the strategy needs 
 
 翻译.  
 
-### <span style="color:blue">Subjective indicator No.1: Market Cap > \$ 7 billion</span>  
+### <span style="color:blue">Subjective Indicator No.1: Market Cap > \$ 7 billion</span>  
 
 The program gathers the most up-to-date (value at close on the last trading day) *market cap* (`market_cap`) for each company, the stocks with a latest market cap smaller than 7 billion USD will be eliminated (from the stock selection list).  
 
@@ -241,7 +242,7 @@ Above output shows the `cap_remove_list`, i.e. the stocks removed from the `stoc
 
 翻译 
 
-### <span style="color:blue">Subjective indicator No.2: Average Weekly Volume > 1 million</span>  
+### <span style="color:blue">Subjective Indicator No.2: Average Weekly Volume > 1 million</span>  
 
 The program first computes the average weekly (trading) `Volume`, the stock with an `average volume` **smaller than 1 million** some time during the last year, will be eliminated (from the stock list).  
 
@@ -255,25 +256,83 @@ A daily (average) trading volume of 1 million or less, indicates the stock was t
 mega7data_modified <-
   mega7data %>% 
   mutate(week = strftime(date,format = "%V")) %>%
-  mutate(year  = year(ymd(date))) 
+  mutate(year  = year(ymd(date)))
 ```
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE,fig.pos='H'}
 weekavg_volume <-
   mega7data_modified %>%
   group_by(year,week,symbol) %>%
-  summarise(average.volume = mean(volume)) 
+  mutate(average.volume = mean(volume)) %>%
+  ungroup() %>%
+  select(year, week, date, symbol, average.volume) 
+```
 
+```{r eval=FALSE, fig.pos='H', message=FALSE, warning=FALSE, include=FALSE}
+# pdf output
 kbl(tail(weekavg_volume,10), booktabs = T, linesep = "",
     digits = 1, caption = "Average Weekly Trading Volume", 
     format.args = list(scientific = FALSE), longtable = T,
-    col.names = c("Year","Week","Symbol","Average Volume")) %>%
+    col.names = c("Year","Week","Date","Symbol","Average Volume")) %>%
   kable_styling(latex_options = c("striped", "scale_down",
                                   "HOLD_position"), 
                 position = "center") %>%
-  column_spec(c(4), bold = T) %>%
+  column_spec(c(5), bold = T) %>%
   footnote(general = "Output 2.2.a: Last 10 rows are shown.")
 ```
+
+```{r eval=FALSE, fig.pos='H', message=FALSE, warning=FALSE, include=FALSE}
+# html Output
+
+
+# Sample data (replace this with your actual data)
+# Assume you have a data frame named all_stock_data containing data for all stocks
+# The data frame should have columns: Date, Stock, Price, Volume, and any other relevant columns
+# Each stock should be identified by a unique value in the Stock column
+# The Date column should be in Date format
+# Example: all_stock_data <- data.frame(Date = seq(as.Date("2019-01-01"), by = "day", length.out = 5*365),
+#                                      Stock = rep(c("Stock1", "Stock2", "Stock3"), each = 5*365),
+#                                      Price = rnorm(5*365*3, mean = 100, sd = 5),
+#                                      Volume = rnorm(5*365*3, mean = 100000, sd = 20000))
+
+# Define UI
+ui222 <- fluidPage(
+  titlePanel("Average Weekly Trading Volume"),
+  sidebarLayout(
+    sidebarPanel(
+      selectInput("stock", "Select Stock:", choices = unique(weekavg_volume$symbol)),
+      dateRangeInput("date_range", "Select Date Range:",
+                     start = min(weekavg_volume$date),
+                     end = max(all_stock_data$Date),
+                     min = min(all_stock_data$Date),
+                     max = max(all_stock_data$Date))
+    ),
+    mainPanel(
+      DTOutput("data_table")
+    )
+  )
+)
+
+# Define server logic
+server <- function(input, output) {
+  
+  # Filter data based on selected stock and date range
+  filtered_data <- reactive({
+    req(input$stock, input$date_range)
+    subset(all_stock_data, Stock == input$stock & Date >= input$date_range[1] & Date <= input$date_range[2])
+  })
+  
+  # Render interactive data table
+  output$data_table <- renderDT({
+    datatable(filtered_data(), options = list(pageLength = 10)) # Adjust page length as needed
+  })
+}
+
+# Run the application
+shinyApp(ui = ui, server = server)
+```
+
+
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 volume_remove_list_intermed <-
@@ -297,7 +356,7 @@ Above output shows the `volume_remove_list`, i.e. the stocks removed from the `s
 
 翻译 
 
-### <span style="color:blue">Subjective indicator No.3: Daily Return $\nless -15\%$</span> 
+### <span style="color:blue">Subjective Indicator No.3: Daily Return $\nless -15\%$</span> 
 
 The program first computes the *daily return* (`price_pctchange`), i.e. the *daily price* (`adjusted`) change in percentages for each stock. Any stock with a 'price drop' of more than 15\% in any trading day during the last year will be eliminated (from the stock selection list). FYI, the program utilizes the daily *adjusted close price* (`adjusted`) as the *daily price* for each stock inputs to the model, which they are adjusted for any dilutions to the shares, i.e. accounts for any dividend distributions and applicable share splits.    
 
@@ -355,7 +414,7 @@ Above output shows the `prcpct_remove_list`, i.e. the stocks removed from the `s
 
 翻译
 
-### <span style="color:blue">Subjective indicator No.4: Annualized volatility $\ngtr 100\%$</span>
+### <span style="color:blue">Subjective Indicator No.4: Annualized volatility $\ngtr 100\%$</span>
 
 The program first computes the (implied) *Annualized Volatility* from the *daily return*s  (`price_pctchange`) for each stock, using $\text{Annualized Volatility}=\Delta(\text{Daily Price})\cdot \sqrt{252}$, assuming 252 trading days every year. Any stock with an implied annual volatility of more than 100\% will be removed from the selection (process). 
 
@@ -435,7 +494,9 @@ kbl(tail(remove_stock_list,10), booktabs = T, linesep = "",
 
 In summary, above are the programming steps of the selection model, in eliminating the 'inappropriate' stocks; to suit specific investment needs/goals, portfolio risk preferences, and meet other internal RM guidelines and requirements. The 4 **subjective indicators** have removed a total **6** U.S. stocks (see the `remove_stock_list` output below) from the potential stock selection list for further modeling and analyzing (**constantly updating by model design, result as of 2024.03.09**).  
 
-* To reemphasize, the stocks on the `remove_stock_list` were eliminated subject to the preset **subjective indicators** listed above. This particular list of indicators are dynamic, which may be adjusted (added/subtracted/modified) to fulfill investment needs based on the changing market landscape. For practical portfolio constructions, more **subjective indicators** should be added, for example, stocks on the government's (so called) 'Entity List', should be eliminated to meet compliance (e.g. Lockheed Martin [LMT.NYSE], RTX Corporation [RTX.NYSE], etc).  
+* To reemphasize, the stocks on the `remove_stock_list` were eliminated subject to the preset **subjective indicators** listed above. This particular list of indicators are dynamic, which may be adjusted (added/subtracted/modified) to fulfill investment needs based on the changing market landscape.   
+
+* For practical portfolio constructions, more **subjective indicators** should be added, for example, stocks on the government's (so called) 'Entity List', should be eliminated to meet compliance (e.g. Lockheed Martin [LMT.NYSE], RTX Corporation [RTX.NYSE], etc).  
 
 翻译. 
 

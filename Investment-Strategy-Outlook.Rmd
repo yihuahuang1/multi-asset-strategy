@@ -1,22 +1,6 @@
-# {-}
-<span style="color:red;font-weight:700;font-size:32px">Stock Selection Strategy Using Quantitative Models 量价选股策略模型</span>  
+<span style="color:red;font-weight:700;font-size:32px">Base Stock Selection Strategy Using Quantitative Models 量化选股策略模型</span>  
 
 <span style="color:red;font-weight:700;font-size:24px">The Base Model: a Technical Signaling Tool for Stock Selection 基础模型：技术指标选股工具</span>  
-
-* [Investment Strategy Outlook 投资策略及模型规划] for **Investment Thesis** and **Model Planning & Considerations** [`Stock Selection Model (Base)`]   
-
-* [(Base) Model Construction 基础模型搭建] for **Model Construction** steps and the **Subjective Filters** [`Stock Selection Model (Base)`]  
-
-* [Technical Indicators Construction 技术指标搭建] for the construction of all **Technical Indicators** used [`Stock Selection Model (Base)`]  
-
-* [Selecting Effective Technical Indicators 选取有效的技术指标] for the **dynamically** selection process of the **significant** **technical indicators** [`Stock Selection Model (Base)`]  
-
-* [(Base) Model Performance 模型选股表现] for the `base` **model performance** and backtest results [`Stock Selection Model (Base)`]  
-
-* [Risk Disclosure 风险披露] for the model and portfolio **risks** [`Stock Selection Model (Base)`]  
-
-* [Appendix 附录] for the codes and our resources [`Stock Selection Model (Base)`] 
-
 
 # Investment Strategy Outlook 投资策略及模型规划
 
@@ -94,20 +78,32 @@ library(zoo)
 library(knitr)
 library(kableExtra)
 library(readxl)
+library(plotly)
 # nasdaq api 44D9F6_XzqEy8xstEuxb
 ```
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.pos='H'}
-allfactortable <- read_excel("factor_list.xlsx")
+FactorType = c(rep("技术类指标(Technical Indicators)",5),"基本面类指标(Fundamental Indicators)","基本面类指标(Fundamental Indicators)","组合表现类指标((Portfolio Performance Indicators)")
 
-# Display factors (both tech and fundamental) 
-kbl(allfactortable, booktabs = T, linesep = "", digits = 1, 
-    caption = "Common Indicators and Factors in Equity Research", 
-    format.args = list(big.mark = ",", scientific = FALSE),
-    col.names = c("Factor Type","Factor Categories","Sample List of Indicators")) %>%
-  kable_styling(latex_options = c("striped", "scale_down")) %>%
-  column_spec(c(1:2), bold = T) %>%
-  footnote(general = "List of Common indicators and factors in Equity Research are shown above, not all factors above are used in this study.")
+FactorCategories = c("均线指标类因子(Moving Average Factor)","成交量类因子(Volume Factor)","动量类因子
+(Momentum Factor)","趋势类因子(Trend Factor)","波动性类因子(Volatility Factor)","基本面类因子(经营效率，盈利能力，成长性和估值，现金流，财务质量)(Fundamental Factor)","风格因子(Other Style Factor)","投资策略因子(Strategy & Portfolio Factor)") 
+
+SampleListofIndicators = c("Simple Moving Average (SMA); Exponential Moving Average (EMA); Weighted Moving Average (WMA); Double Exponential Moving Average (DEMA); Triple Exponential Moving Average (TEMA); Gann High Low Activator (HiLo); Hull Exponential Moving Average (HMA); Linear Regression Moving Average (LINREG); Symmetric Weighted Moving Average (SMWA); Variable Index Dynamic Average (VIDYA); Volume Weighted Moving Average (VWMA); Zero Lag Moving Average (ZLMA); and etc.", "Accumulation/Distribution Oscillator (ADOSC); Chaikin Money Flow (CMF); Price Volume Trend (PVT); On-Balance Volume (OBV); Archer On-Balance Volume (AOBV); Elder’s Force Index (EFI); Ease of Movement (EOM); Money Flow Index (MFI); Positive Volume Index (PVI); Negative Volume Index (NVI); Price-Volume (PVOL); Price Volume Rank (PVR); Volume Profile (VP); etc.","Rate of Change (ROC); Awesome Oscillator (AO); Absolute Price Oscillator (APO); Bias (BIAS); Balance of Power (BOP); Commodity Channel Index (CCI); Chanda Forecast Oscillator (CFO); Center of Gravity (CG); Correlation Trend Indicator (CTI); Efficiency Ratio (ER); Elder Ray Index (ERI); Moving Average Convergence Divergence (MACD); Stochastic Oscillator (KDJ); Inertia; Relative Strength Index (RSI); Relative Strength Xtra (RSX); n-day Momentum (MOM); Psychological Line (PSL); Slope; Stochastic Momentum Index Ergodic Indicator (SMI Ergodic Indicator); Squeeze (SQZ); Squeeze Pro (SQZPRO); Stochastic Relative Strength Index (STOCHRSI); Triple Exponentially Smoothed Moving Average (TRIX); True Strength Index (TSI); etc.","Average Directional Movement Index (ADX); Archer Moving Averages Trends (AMAT); Choppiness Index (CHOP); Decay; Increasing/Decreasing; Detrend Price Oscillator (DPO); Long run/Short run; Q Stick (qstick); TTM Trend; Vortex (Vortex Indicator); and etc.","Historical Volatility (HV); Implied Volatility (IV); beta ($\beta$); Aberration; True Range (TR); Average True Range (ATR); Bollinger Bands (BBands); Mass Index (massi); Relative Volatility Index (RVI); Acceleration Bands (accbands); Elder’s Thermometer (thermos); Ulcer Index (ui); etc.","Asset Turnover Ratio (ATR); Inventory Turnover Ratio (ITR); Account Receivable Turnover Ratio (ARTR); Long-term Asset Turnover Ratio (LATR), Short-term (Operating) Asset Turnover Ratio (SATR); EV/EBITDA; EV/Sales; Free Cash Flow Yield (FCF Yield); Price/Earnings Ratio (PE); Price/Book Ratio (PB); Price/Sales (PS); Return on Assets (ROA); Return on Equity (ROE); Return on Invested Capital (ROIC); Dividend Yield; Gross Margin Ratio (GMR); Operating Profit Margin Ratio (OMR); Net Profit/EBIT Margin Ratio (NPR); EBITDA Margin Ratio; Weighted Average Cost of Capital (WACC); Economic Profit (ROIC-WACC); and etc.","Size; Dividend; Sentiment; etc.","Information Ratio; Maximum Drawdown (MDD); etc.")
+
+allfactortable <- data.frame(FactorType,FactorCategories,SampleListofIndicators)
+
+allfactortable <-allfactortable %>%
+  rename("Factor Type" = FactorType,
+         "Factor Categories" = FactorCategories,
+         "Sample List of Indicators" = SampleListofIndicators)
+```   
+
+```{r}
+
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+knitr::include_graphics("factor_list.png")
 ```
 
 
