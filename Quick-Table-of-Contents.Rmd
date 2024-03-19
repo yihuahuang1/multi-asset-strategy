@@ -14,7 +14,7 @@
 
 * [Selecting Effective Technical Indicators 选取有效的技术指标] for the **dynamically** selection process of the **significant** **technical indicators** [`Stock Selection Model (Base)`]  
 
-* [(Base) Model Performance 模型选股表现] for the `base` **model performance** and backtest results [`Stock Selection Model (Base)`]  
+* [(Base) Model Performance 模型选股表现] for the `base` **model performance** and **backtest** results [`Stock Selection Model (Base)`]  
 
 
 #### <span style="font-weight:700;font-size:17px">The Complete Model: a Comprehensive Stock Selection Model: Using Quantitative Indicators 完整模型：基于量化指标的全面选股工具</span> {-} 

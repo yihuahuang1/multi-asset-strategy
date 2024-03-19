@@ -98,9 +98,7 @@ allfactortable <-allfactortable %>%
          "Sample List of Indicators" = SampleListofIndicators)
 ```   
 
-```{r}
 
-```
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 knitr::include_graphics("factor_list.png")

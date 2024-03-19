@@ -27,4 +27,20 @@ description: "THIS IS THE DESCRIP PART on index."
 ---
 # Homepage{-}
 
-PIC MULTIASSET multi strategy GIF
+<span style="color:black;font-weight:700;font-size:26px">Global Multi-asset Strategy</span>  
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+knitr::include_graphics("homepagefigure.png")
+```
+
+
+
+
+
+
+
+
+
+
+
+

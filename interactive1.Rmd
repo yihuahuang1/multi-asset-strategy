@@ -1,0 +1,9 @@
+# DEMO ONLY 1  {-}
+
+Stock Selection - Interactive Output Page \#1 
+
+```{r echo=FALSE}
+knitr::include_app(" https://yihuahuang1.shinyapps.io/multi-asset-strategy-DEMO1/", height = "900px")
+```
+
+`In Progress`
