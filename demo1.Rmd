@@ -43,38 +43,41 @@ ui22 <- fluidPage(
   ),           
   
   titlePanel("DEMO: Stock Selection - Interactive Output Page 1 动态交互结果展示(第1部分)",
-             windowTitle = "Interactive Outputs-Stock 1"),
+             windowTitle = "Interactive Output-Stock 1"),
   
   div(
-    style = "display: flex; flex-direction: column; height: 100vh;",
+    style = "display: flex; flex-direction: column; height: 200vh;",
     sidebarLayout(
       sidebarPanel(
-        selectInput("symbol", "Symbol 代码 DEMO", choices = unique(mega7data_modified$symbol)),
+        selectInput("symbol", "Symbol 代码 DEMO", 
+                    choices = unique(mega7data_modified$symbol)),
+        
         dateRangeInput("dateRange", "Date Range 时间范围", 
-                       start = min(mega7data_modified$date), end = max(mega7data_modified$date)),
+                       start = min(mega7data_modified$date), 
+                       end = max(mega7data_modified$date)),
+        
         checkboxGroupInput("variables", "Variables 指标 (可多选)", 
-                           choices = c("adjusted" = "adjusted", "high", "low","open", "close",
-                                       "volume"="volume","market cap (USD)"="marketcap"),
+                           choices = c("Adjusted close" = "adjusted", "High" = "high", 
+                                       "Low" = "low","Open" = "open", "Close" = "close",
+                                       "Trading volume" = "volume",
+                                       "Market cap (USD)"="marketcap"),
                            selected = c("adjusted","volume")),
-        checkboxGroupInput("multiChoiceVars", "Filter Choices 过滤指标 (可多选)", 
-                       choices = c("Percent Change or ROC" = "price_pctchange",
+        
+        checkboxGroupInput("multiChoiceVars", "Subjective Filters 过滤指标 (可多选)", 
+                           choices = c("Percent Change or ROC" = "price_pctchange",
                                    "Average Weekly Volume" = "average.volume",
-                                   "Implied Volatility" = "annual_volatility")),
-        selectInput("singleChoiceVar", "Subjective Graph Choice 过滤指标图像 (单选)", 
-                choices = c("Percent Change or ROC" = "price_pctchange",
-                            "Average Weekly Volume" = "average.volume",
-                            "Implied Volatility" = "annual_volatility"),
-                selected = "price_pctchange")
+                                   "Implied Volatility" = "annual_volatility"))
       ),
       mainPanel(
         tabsetPanel(
           tabPanel("Data Table 数据", DTOutput("table")),
           tabPanel("Price Chart 股价", plotlyOutput("candleChart")),
           tabPanel("Volume Chart 交易量", plotlyOutput("volumePlot")),
-          tabPanel("Subjective Filters 过滤指标", DTOutput("subjectiveTable"),
-                   plotlyOutput("subjectiveGraph"))
-        ),
-        style = "flex-grow: 1;" # This allows the main content to expand and fill available space
+          tabPanel("Subjective Filters 过滤指标", DTOutput("subjectiveTable"), uiOutput("dynamicGraphs"))
+
+  ),
+        style = "flex-grow: 1;", # This allows the main content to expand and fill available space
+       uiOutput("instructions")
       )
     )
   )
@@ -92,25 +95,19 @@ server22 <- function(input, output) {
   filteredData <- reactive({
     req(input$symbol, input$dateRange)
     mega7data_modified %>%
-      filter(symbol == input$symbol, date >= input$dateRange[1], 
+      filter(symbol == input$symbol, 
+             date >= input$dateRange[1], 
              date <= input$dateRange[2]) %>%
       select(date, symbol, all_of(input$variables)) %>%
       arrange(desc(date))
-  })   
-  filteredDataWithAdditionalVars <- reactive({
-    selectedVars <- c(input$multiChoiceVars)
-    req(input$symbol, input$dateRange, selectedVars)
-    
-      mega7data_modified %>%
-        filter(symbol == input$symbol, date >= input$dateRange[1], date <= input$dateRange[2]) %>%
-        select(date, symbol, all_of(selectedVars)) %>%
-        arrange(desc(date))
   })
+ 
   # Reactive expression for filtered data for the graphs
   filteredGraphData <- reactive({
     req(input$symbol, input$dateRange)
     data <- mega7data_modified %>%
-      filter(symbol == input$symbol, date >= input$dateRange[1], 
+      filter(symbol == input$symbol, 
+             date >= input$dateRange[1], 
              date <= input$dateRange[2]) %>%
       select(date, adjusted, volume, high, low, open) %>%
       mutate(date = as.Date(date),
@@ -119,9 +116,13 @@ server22 <- function(input, output) {
                                 "<br>Close:", sprintf("%.2f", adjusted),
                                 "<br>High:", sprintf("%.2f", high), 
                                 "<br>Low:", sprintf("%.2f", low),
-                                "<br>Volume:", formatC(volume, format = "f", digits = 2, big.mark = ",")))
+                                "<br>Volume:", formatC(volume, format = "f", 
+                                                       digits = 1, big.mark = ",")))
+    req(nrow(data) > 0)
     data
   })
+  
+  
   
   # Render the table
   output$table <- renderDT({
@@ -134,24 +135,45 @@ server22 <- function(input, output) {
       formatStyle("volume", fontWeight = "bold",
                   `data-thousands` = ",", `data-type` = "formatted-num") %>%
       formatRound(columns = which(names(filteredData()) == "volume"), digits = 0) %>%
+      formatRound(columns = which(names(filteredData()) == "marketcap"),digits = 1) %>%
       formatStyle("adjusted", fontWeight = "bold")
   })
   
-    # Subjective Filters Tab: Table rendering
-  output$subjectiveTable <- renderDT({
-    datatable(
-      filteredDataWithAdditionalVars(), 
-      options = list(pageLength = 10, autoWidth = TRUE),
-      caption = htmltools::tags$caption(style = "caption-side: top; font-size: 180%;",
-                                        "Subjective Analysis Data")
-    )
+  
+  # Reactive expression for filtered data with additional variables
+  filteredDataWithAdditionalVars <- reactive({
+    selectedVars <- c(input$variables, input$multiChoiceVars)
+    req(input$symbol, input$dateRange, selectedVars)
+    mega7data_modified %>%
+      filter(symbol == input$symbol, 
+             date >= input$dateRange[1], 
+             date <= input$dateRange[2]) %>%
+      select(date, symbol, all_of(selectedVars)) %>%
+      arrange(desc(date))
   })
   
   
-  # Render the plot
+  # Render the Subjective Filters table
+  output$subjectiveTable <- renderDT({
+    dataForTable <- filteredDataWithAdditionalVars()
+    datatable(
+      dataForTable,
+      options = list(pageLength = 10, autoWidth = TRUE),
+      caption = htmltools::tags$caption(style = "caption-side: top; font-size: 180%;",
+                                        "Data on the Subjective Filters 过滤条件/主观指标数据") 
+        ) %>%
+
+      formatStyle(columns = c(input$multiChoiceVars), fontWeight = 'bold', color = 'blue')
+})
+        
+        
+
+
+  
+  # Render the plot candle stick
   output$candleChart <- renderPlotly({
     data <- filteredGraphData()
-    
+    req(data$date, data$open, data$adjusted, data$high, data$low)
     # Constructing the graphs 
     
     p <- plot_ly(data, x = ~ date, type ="candlestick",
@@ -166,7 +188,8 @@ server22 <- function(input, output) {
                                   '<br>Close:', sprintf("%.2f", data$adjusted),
                                   '<br>High:', sprintf("%.2f", data$high), 
                                   '<br>Low:', sprintf("%.2f", data$low),
-                                  '<br>Volume:', formatC(data$volume, format = "f", digits = 0, big.mark = ","))
+                                  '<br>Volume:', formatC(data$volume, format = "f", 
+                                                         digits = 1, big.mark = ","))
     
     p <- p %>% add_trace(
       x = ~date,
@@ -187,7 +210,8 @@ server22 <- function(input, output) {
   output$volumePlot <- renderPlotly({
     data <- filteredGraphData()
     req(data$volume)
-    v <- plot_ly(data = data, x = ~date, y = ~volume, type = 'bar', marker = list(color = 'darkorange')) %>%
+    v <- plot_ly(data = data, x = ~date, y = ~volume, 
+                 type = 'bar', marker = list(color = 'darkorange')) %>%
       layout(title = paste("Volume for", input$symbol, "US Equity: 日交易量"),
              xaxis = list(title = "Date 日期"),
              yaxis = list(title = "Trading Volume 日交易量", tickformat = ",.0f"),
@@ -195,28 +219,74 @@ server22 <- function(input, output) {
     
     
     v
-    
-    
-  })
-  
-  # Subjective Filters Tab: Dynamic Graph rendering
-  output$subjectiveGraph <- renderPlotly({
-    req(input$singleChoiceVar)
-    data <- filteredDataWithAdditionalVars()
-    
-    # Dynamic graph based on single choice selection
-    p <- ggplot(data, aes_string(x = "date", y = input$singleChoiceVar)) +
-      geom_line() +
-      theme_minimal() +
-      labs(title = paste("Graph of", input$singleChoiceVar, "over Time"),
-           x = "Date",
-           y = input$singleChoiceVar)
-    
-    ggplotly(p)
   })
   
   
+ # Dynamic Graphs in Subjective Filters tab
+  output$dynamicGraphs <- renderUI({
+    req(input$multiChoiceVars)
+    vars <- input$multiChoiceVars
+    
+    graphOutputs <- lapply(seq_along(vars), function(i) {
+      varName <- vars[i]
+      plotName <- paste("subjectiveGraph", i, sep = "_")
+      plotlyOutput(plotName)
+    })
+    
+    do.call(tagList, graphOutputs)
+  })
   
+  
+  observe({
+  lapply(seq_along(input$multiChoiceVars), function(i) {
+    varName <- input$multiChoiceVars[i]
+    outputName <- paste("subjectiveGraph", i, sep = "_")
+    
+    output[[outputName]] <- renderPlotly({
+      req(input$symbol, input$dateRange)
+      data <- filteredDataWithAdditionalVars()
+      
+      # Convert 'date' to Date format if it's not already
+      data$date <- as.Date(data$date)
+      
+      # Ensure non-NA data exists for plotting
+      req(sum(!is.na(data[[varName]])) > 0)
+
+      # Adjust the plot based on the variable
+      if (varName == "average_volume") {
+        # Bar chart for average volume
+        q <- ggplot(data, aes_string(x = "date", y = varName, group = 1)) +
+          geom_bar(stat = "identity", fill = "steelblue") +
+          theme_minimal() +
+          labs(title = "Average Weekly Volume over Time", x = "Date", y = "Average Volume") +
+          scale_x_date(date_breaks = "2 months", date_labels = "%b %Y")
+      } else if (varName == "price_pctchange") {
+        # Line chart for price percent change with color indicating trend
+        q <- ggplot(data, aes_string(x = "date", y = varName, group = 1)) +
+          geom_line(aes(color = ifelse(data[[varName]] >= 0, "green", "red"))) +
+          theme_bw() +
+          labs(title = "Price Percent Change over Time", x = "Date", y = "Percent Change") +
+          scale_color_manual(values = c("green" = "green", "red" = "red")) +
+          scale_x_date(date_breaks = "2 months", date_labels = "%b %Y") +
+          guides(color = FALSE) # Hide the legend for color
+      } else {
+        # Default to a line plot for any other variables
+        q <- ggplot(data, aes_string(x = "date", y = varName, group = 1)) +
+          geom_line() +
+          theme_minimal() +
+          labs(title = paste("Graph of", varName, "over Time"), x = "Date", y = varName) +
+          scale_x_date(date_breaks = "2 months", date_labels = "%b %Y")
+      }
+
+      ggplotly(q, tooltip = "text")
+    })
+  })
+})
+
+  
+  
+
+    
   
   output$instructions <- renderUI({
     HTML('
