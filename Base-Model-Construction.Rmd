@@ -17,7 +17,9 @@ library(kableExtra)
 library(plotly)
 library(shiny)
 library(DT)
-# nasdaq api 44D9F6_XzqEy8xstEuxb
+library(flextable)
+library(htmltools)
+library(readr)
 ```
 
 The model designing to select stocks is heavily dependent on the portfolio strategy and risk preferences.
@@ -138,8 +140,12 @@ Following the model flow chart, the sections below will illustrate the the `base
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
 # Data Intake
-mega7data = read.csv("mega7tidy.csv")
-mega7mcap = read.csv("mega7marketcap.csv")
+mega7tidyurl <- url("https://gitee.com/yihuahuang1/stockdata/raw/master/mega7tidy.csv")
+mega7capurl <- url("https://gitee.com/yihuahuang1/stockdata/raw/master/mega7marketcap.csv")
+mega7data = read.csv(mega7tidyurl)
+mega7mcap = read.csv(mega7capurl)
+#mega7data = read.csv("mega7tidy.csv")
+#mega7mcap = read.csv("mega7marketcap.csv")
 ```
 
 ```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
@@ -173,18 +179,43 @@ mega7data_modified <-
   inner_join(mega7mcap, join_by(symbol == Stock)) %>%
   rename(marketcap = Marketcap) %>%
   select(!X.x) %>% 
-  select(!X.y) 
+  select(!X.y) %>%
+  arrange(desc(date))
+
+mega7data_modified$marketcap <- as.numeric(mega7data_modified$marketcap)
 ```  
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, fig.pos='H'}
-kbl(tail(mega7data_modified,10), booktabs = T, linesep = "", 
+```{r fig.pos='H', message=FALSE, warning=FALSE, include=FALSE}
+# pdf output
+kbl(head(mega7data_modified,10), booktabs = T, linesep = "", 
     digits = 1, caption = "Cleaned Data Glance: NYSE and NASDAQ Stocks", 
     format.args = list(big.mark = ",", scientific = FALSE)) %>%
   kable_styling(latex_options = c("striped","scale_down",
                                   "HOLD_position"), 
                 position = "center") %>%
-  column_spec(c(3,8,9,10), bold = T) %>%
-  footnote(general = "Output 2.1.a: Last 10 rows are shown.")
+  column_spec(c(2,3,8,9), bold = T) %>%
+  kableExtra::footnote(general = "Output 2.1.a: First 10 rows are shown.")
+```
+
+
+```{r echo=FALSE, fig.pos='H', message=FALSE, warning=FALSE}
+# html output
+
+# Apply comma formatting to "Average Volume" column without change dataset
+mega7data_modified_display <- mega7data_modified
+
+mega7data_modified_display$volume <- format(mega7data_modified_display$volume, big.mark = ",")
+mega7data_modified_display$marketcap <- format(mega7data_modified_display$marketcap, big.mark = ",", scientific = FALSE)
+
+# Create the interactive table using DT
+DT::datatable(mega7data_modified_display, 
+          caption = htmltools::tags$caption(style = 'caption-side: top; text-align: center; color: black; font-size: 200%;', 'Cleaned Data Glance: NYSE and NASDAQ Stocks'),
+          options = list(
+            pageLength = 10,
+            lengthMenu = c(5, 10, 15, 20),
+            searching = TRUE
+          )) %>%
+formatRound(columns = c('open', 'close', 'adjusted', 'high','low'), digits = 2)
 ```
 
 ## Portfolio-specific Subjective Indicators 其他组合相关过滤指标
@@ -225,7 +256,7 @@ A market cap less than $7 billion, indicates the stock is more growth in nature,
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 cap_remove_list_intermed <-
   mega7data_modified %>%
-  filter(market_cap < 7e+9) 
+  filter(marketcap < 7e+9) 
 
 cap_remove_list <- 
   pull(cap_remove_list_intermed, symbol)  %>%
@@ -237,7 +268,17 @@ mega7data_modified <-
   mega7data_modified %>%
   filter(!symbol %in% cap_remove_list)
 
-print(cap_remove_list)
+# print(cap_remove_list)
+
+kbl(cap_remove_list, booktabs = T, linesep = "", 
+    col.names = "Symbol" , 
+    caption = "Stocks Removed by Market Cap") %>%
+  kable_styling(latex_options = c("striped", "scale_down",
+                                  "HOLD_position"), 
+                position = "center", full_width = T) %>%
+  #column_spec(c(2), bold = T) %>%
+  kableExtra::footnote(general = "Output 2.2.1.a: Last 10 rows are shown.",
+           symbol = "Stocks with market cap smaller than 7 billion USD")
 ```
 
 Above output shows the `cap_remove_list`, i.e. the stocks removed from the `stockdata` dataset due to its *market cap* was smaller than 7 billion USD ($7\times 10^9$) some time during last year, to meet internal RM guidelines, and actively manage the potential downside risks and return fluctuation (drawdown) issues.  
@@ -246,7 +287,7 @@ Above output shows the `cap_remove_list`, i.e. the stocks removed from the `stoc
 
 ### <span style="color:blue">Subjective Indicator No.2: Average Weekly Volume > 1 million</span>  
 
-The program first computes the average weekly (trading) `Volume`, the stock with an `average volume` **smaller than 1 million** some time during the last year, will be eliminated (from the stock list).  
+The program first computes the average weekly (trading) `Volume`, the stock with an **average volume** **smaller than 1 million** some time during the last year, will be eliminated (from the stock list).  
 
 A daily (average) trading volume of 1 million or less, indicates the stock was traded  inactively in relative terms. To satisfy internal RM and compliance guidelines, and avoid any liquidity risks; the model therefore in advance, eliminates these stocks and label them as 'inviable' investment options.  
 
@@ -262,31 +303,57 @@ mega7data_modified <-
 ```
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE,fig.pos='H'}
-weekavg_volume <-
+mega7data_modified <-
   mega7data_modified %>%
   group_by(year,week,symbol) %>%
   mutate(average.volume = mean(volume)) %>%
-  ungroup() %>%
-  select(year, week, date, symbol, average.volume) 
+  ungroup() 
 ```
 
-```{r eval=FALSE, fig.pos='H', message=FALSE, warning=FALSE, include=FALSE}
+```{r include=FALSE}
+weekavg_volume <- 
+  mega7data_modified %>%
+  select(year, week, date, symbol, average.volume) %>%
+  arrange(desc(date))
+```
+
+```{r fig.pos='H', message=FALSE, warning=FALSE, include=FALSE}
 # pdf output
-kbl(tail(weekavg_volume,10), booktabs = T, linesep = "",
+kbl(head(weekavg_volume,10), booktabs = T, linesep = "",
     digits = 1, caption = "Average Weekly Trading Volume", 
-    format.args = list(scientific = FALSE), longtable = T,
+    format.args = list(big.mark= ",",scientific = FALSE), longtable = T,
     col.names = c("Year","Week","Date","Symbol","Average Volume")) %>%
   kable_styling(latex_options = c("striped", "scale_down",
                                   "HOLD_position"), 
                 position = "center") %>%
   column_spec(c(5), bold = T) %>%
-  footnote(general = "Output 2.2.2.a: Last 10 rows are shown.")
+  kableExtra::footnote(general = "Output 2.2.2.a: First 10 rows are shown.")
 ```
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# html output
+# Apply comma formatting to "Average Volume" column without changing the date frame
+
+weekavg_volume_display <- weekavg_volume
+
+weekavg_volume_display$average.volume <- format(weekavg_volume_display$average.volume, big.mark = ",")
+
+# Create the interactive table using DT
+DT::datatable(weekavg_volume_display, 
+          caption = htmltools::tags$caption(style = 'caption-side: top; text-align: center; color: black; font-size: 200%;', ' Average Weekly Trading Volume'),
+          options = list(
+            pageLength = 10,
+            lengthMenu = c(5, 10, 15, 20),
+            searching = TRUE))
+```
+
+Table: 2.2.2-a: Interactive **average volume** table
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 volume_remove_list_intermed <-
   weekavg_volume %>%
-  filter(average.volume < 1e+6) 
+  filter("average volume" < 1e+6) 
 
 volume_remove_list <- 
   pull(volume_remove_list_intermed, symbol)  %>%
@@ -298,7 +365,17 @@ mega7data_modified <-
   mega7data_modified %>%
   filter(!symbol %in% volume_remove_list)
 
-print(volume_remove_list)
+#print(volume_remove_list)
+
+kbl(volume_remove_list, booktabs = T, linesep = "", 
+    col.names = "Symbol" , 
+    caption = "Stocks Removed by Trading Volume") %>%
+  kable_styling(latex_options = c("striped", "scale_down",
+                                  "HOLD_position"), 
+                position = "center", full_width = T) %>%
+  #column_spec(c(2), bold = T) %>%
+  kableExtra::footnote(general = "Output 2.2.2.b: Last 10 rows are shown.",
+           symbol = "Stocks with average weekly trading volume smaller than 1 million.")
 ```
 
 Above output shows the `volume_remove_list`, i.e. the stocks removed from the `stockdata` dataset due to its `average volume` was smaller than 1 million ($1\times 10^6$) some time during last year, to avoid potential liquidity issues.  
@@ -324,11 +401,12 @@ mega7data_modified <-
 pctchange_display <-
   mega7data_modified %>% 
   select(symbol,date,adjusted,price_pctchange) %>%
-  tail(10)
+  arrange(desc(date))
 ```
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, fig.pos='H'}
-kbl(pctchange_display, booktabs = T, linesep = "",
+```{r fig.pos='H', message=FALSE, warning=FALSE, include=FALSE}
+# pdf output
+kbl(head(pctchange_display,10), booktabs = T, linesep = "",
     digits = 4, caption = "Price Percentage Change (1-day ROC)", 
     format.args = list(big.mark = ",", scientific = FALSE),
     col.names = c("Symbol","Date","Adj Close","Price Change %")) %>%
@@ -336,8 +414,24 @@ kbl(pctchange_display, booktabs = T, linesep = "",
                                   "HOLD_position"), 
                 position = "center") %>%
   column_spec(c(3,4), bold = T) %>%
-  footnote(general = "Output 2.2.b: Last 10 rows are shown.")
+  kableExtra::footnote(general = "Output 2.2.3.a: First 10 rows are shown.")
 ```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# html output
+# Create the interactive table using DT
+
+DT::datatable(pctchange_display, 
+          caption = htmltools::tags$caption(style = 'caption-side: top; text-align: center; color: black; font-size: 200%;', ' Price Percentage Change (1-day ROC)'),
+          options = list(
+            pageLength = 10,
+            lengthMenu = c(5, 10, 15, 20),
+            searching = TRUE)) %>% 
+  formatRound(columns = 'adjusted', digits = 2) %>%
+  formatRound(columns = 'price_pctchange', digits = 4)
+```  
+
+Table: 2.2.3-a: Interactive **price change** (ROC) table
 
 *\textcolor{red}{Code Hidden 代码已隐藏}*  
 
@@ -356,7 +450,17 @@ mega7data_modified <-
   mega7data_modified %>%
   filter(!symbol %in% prcpct_remove_list)
 
-print(prcpct_remove_list)
+#print(prcpct_remove_list)
+
+kbl(prcpct_remove_list, booktabs = T, linesep = "", 
+    col.names = "Symbol" , 
+    caption = "Stocks Removed by Rate of Change (ROC)") %>%
+  kable_styling(latex_options = c("striped", "scale_down",
+                                  "HOLD_position"), 
+                position = "center", full_width = T) %>%
+  #column_spec(c(2), bold = T) %>%
+  kableExtra::footnote(general = "Output 2.2.3.b: Last 10 rows are shown.",
+           symbol = "Stocks with daily price change (%) more than -15%.")
 ```
 
 Above output shows the `prcpct_remove_list`, i.e. the stocks removed from the `stockdata` dataset due to its *daily return* was smaller than $-15\%$, some time during last year, to manage short-term drawdown.  
@@ -382,11 +486,12 @@ annual_volatility_display <-
   mega7data_modified %>%
   select(date, adjusted, symbol, annual_volatility) %>%
   na.omit() %>%
-  tail(10)
+  arrange(desc(date))
 ``` 
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, fig.pos='H'}
-kbl(annual_volatility_display, booktabs = T, linesep = "",
+```{r echo=FALSE, fig.pos='H', message=FALSE, warning=FALSE}
+# pdf output
+kbl(head(annual_volatility_display,10), booktabs = T, linesep = "",
     digits = 4, caption = "Implied Annualized Volatility", 
     format.args = list(big.mark = ",", scientific = FALSE),
     col.names = c("Date","Adj Close","Symbol","Annual Volatility %")) %>%
@@ -394,8 +499,28 @@ kbl(annual_volatility_display, booktabs = T, linesep = "",
                                   "HOLD_position"), 
                 position = "center") %>%
   column_spec(c(2,4), bold = T) %>%
-  footnote(general = "Output 2.2.c: Last 10 rows are shown.")
+  kableExtra::footnote(general = "Output 2.2.4.a: First 10 rows are shown.")
 ```
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# html output
+# Create the interactive table using DT
+
+DT::datatable(annual_volatility_display, 
+          caption = htmltools::tags$caption(style = 'caption-side: top; text-align: center; color: black; font-size: 200%;', 'Implied Annualized Volatility'),
+          options = list(
+            pageLength = 10,
+            lengthMenu = c(5, 10, 15, 20),
+            searching = TRUE)) %>% 
+  formatRound(columns = 'adjusted', digits = 2) %>%
+  formatRound(columns = 'annual_volatility', digits = 2)
+```  
+
+Table: 2.2.4-a: Interactive **Annual Volatility %** (ROC) table
+
+```{r include=FALSE}
+write_csv(mega7data_modified, "mega7subj.csv")
+```
+
 
 *\textcolor{red}{Code Hidden 代码已隐藏}*  
 
@@ -414,7 +539,17 @@ mega7data_modified <-
   mega7data_modified %>%
   filter(!symbol %in% volat_remove_list)
 
-print(volat_remove_list)
+#print(volat_remove_list)
+
+kbl(volat_remove_list, booktabs = T, linesep = "", 
+    col.names = "Symbol" , 
+    caption = "Stocks Removed by Implied Volatility") %>%
+  kable_styling(latex_options = c("striped", "scale_down",
+                                  "HOLD_position"), 
+                position = "center", full_width = T) %>%
+  column_spec(c(1), bold = T) %>%
+  kableExtra::footnote(general = "Output 2.2.4.b: Last 10 rows are shown.",
+           symbol = "Stocks with Implied Annualized Volatility(%) more than 100%.")
 ```
 
 Above output shows the `volat_remove_list`, i.e. the stocks removed from the `stockdata` dataset due to its *annualized volatility* (`annual_volatility`) was greater than $100\%$, some time during last year, to actively control unusual return fluctuations and manage downside risks.  
@@ -437,7 +572,7 @@ kbl(tail(remove_stock_list,10), booktabs = T, linesep = "",
                                   "HOLD_position"), 
                 position = "center", full_width = T) %>%
   column_spec(c(2), bold = T) %>%
-  footnote(general = "Output 2.2.c: Last 10 rows are shown.",
+  kableExtra::footnote(general = "Output 2.2.c: Last 10 rows are shown.",
            symbol = "In no means these removed stocks will bring negative investment returns, some of them may bring substantial (positive) future returns.")
 ```
 
@@ -445,11 +580,9 @@ In summary, above are the programming steps of the selection model, in eliminati
 
 * To reemphasize, the stocks on the `remove_stock_list` were eliminated subject to the preset **subjective indicators** listed above. This particular list of indicators are dynamic, which may be adjusted (added/subtracted/modified) to fulfill investment needs based on the changing market landscape.   
 
-* For practical portfolio constructions, more **subjective indicators** should be added, for example, stocks on the government's (so called) 'Entity List', should be eliminated to meet compliance (e.g. Lockheed Martin [LMT.NYSE], RTX Corporation [RTX.NYSE], etc).  
+* For practical portfolio constructions, more **subjective indicators** should be added, for example, stocks on the government's (so called) 'Entity List', should be eliminated to meet compliance (e.g. *Lockheed Martin [LMT.NYSE]*, *RTX Corporation [RTX.NYSE]*, etc).  
 
 翻译. 
-
-
 
 
 

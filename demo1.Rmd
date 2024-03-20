@@ -15,8 +15,15 @@ library(shinydashboard)
 
 ```{r include=FALSE}
 # Data Intake
-mega7data <- read.csv("mega7tidy.csv")
-mega7mcap <- read.csv("mega7marketcap.csv")
+
+mega7subjyurl <- url("https://gitee.com/yihuahuang1/stockdata/raw/master/mega7subj.csv")
+mega7capurl <- url("https://gitee.com/yihuahuang1/stockdata/raw/master/mega7marketcap.csv")
+mega7data = read.csv(mega7subjyurl)
+mega7mcap = read.csv(mega7capurl)
+# mega7data <- read.csv("mega7subj.csv")
+# mega7mcap = read.csv("mega7marketcap.csv")
+
+
 
 mega7data_modified <- 
   mega7data %>%
@@ -27,49 +34,79 @@ mega7data_modified <-
 mega7data_modified$marketcap <- round(mega7data_modified$marketcap, 0)
 ```
 
+
 ```{r include=FALSE}
 # Define UI
 ui22 <- fluidPage(
-
-    titlePanel("DEMO: Stock Selection - Interactive Output Page No.1 动态交互结果展示(第1部分)",
-               windowTitle = "Interactive Stock Charts"),
-    
-    
+  tags$head(
+    tags$meta(name = "viewport", content = "width=device-width, initial-scale=1")
+  ),           
+  
+  titlePanel("DEMO: Stock Selection - Interactive Output Page 1 动态交互结果展示(第1部分)",
+             windowTitle = "Interactive Outputs-Stock 1"),
+  
+  div(
+    style = "display: flex; flex-direction: column; height: 100vh;",
     sidebarLayout(
-        sidebarPanel(
-            selectInput("symbol", "Symbol 代码 DEMO", choices = unique(mega7data_modified$symbol)),
-            dateRangeInput("dateRange", "Date Range 时间范围", 
-                           start = min(mega7data_modified$date), end = max(mega7data_modified$date)),
-            checkboxGroupInput("variables", "Variables 指标 (可多选)", 
-                               choices = c("adjusted" = "adjusted", "high", "low","open", "close",
-                                           "volume"="volume","market cap (USD)"="marketcap"),
-                               selected = c("adjusted","volume"))
+      sidebarPanel(
+        selectInput("symbol", "Symbol 代码 DEMO", choices = unique(mega7data_modified$symbol)),
+        dateRangeInput("dateRange", "Date Range 时间范围", 
+                       start = min(mega7data_modified$date), end = max(mega7data_modified$date)),
+        checkboxGroupInput("variables", "Variables 指标 (可多选)", 
+                           choices = c("adjusted" = "adjusted", "high", "low","open", "close",
+                                       "volume"="volume","market cap (USD)"="marketcap"),
+                           selected = c("adjusted","volume")),
+        checkboxGroupInput("multiChoiceVars", "Filter Choices 过滤指标 (可多选)", 
+                       choices = c("Percent Change or ROC" = "price_pctchange",
+                                   "Average Weekly Volume" = "average.volume",
+                                   "Implied Volatility" = "annual_volatility")),
+        selectInput("singleChoiceVar", "Subjective Graph Choice 过滤指标图像 (单选)", 
+                choices = c("Percent Change or ROC" = "price_pctchange",
+                            "Average Weekly Volume" = "average.volume",
+                            "Implied Volatility" = "annual_volatility"),
+                selected = "price_pctchange")
+      ),
+      mainPanel(
+        tabsetPanel(
+          tabPanel("Data Table 数据", DTOutput("table")),
+          tabPanel("Price Chart 股价", plotlyOutput("candleChart")),
+          tabPanel("Volume Chart 交易量", plotlyOutput("volumePlot")),
+          tabPanel("Subjective Filters 过滤指标", DTOutput("subjectiveTable"),
+                   plotlyOutput("subjectiveGraph"))
         ),
-        mainPanel(
-          tabsetPanel(
-            tabPanel("Data Table 数据", DTOutput("table")),
-            tabPanel("Price Chart 股价", plotlyOutput("candleChart", height = "800px")),
-            tabPanel("Volume Chart 交易量", plotlyOutput("volumePlot", height = "800px"))
-          ),
-           htmlOutput("instructions")
-        )
+        style = "flex-grow: 1;" # This allows the main content to expand and fill available space
+      )
     )
+  )
 )
+
 ```
 
+
+
 ```{r include=FALSE}
+
 # Define server logic
 server22 <- function(input, output) {
-    # Reactive expression for filtered data for the table
-    filteredData <- reactive({
-        req(input$symbol, input$dateRange)
-        mega7data_modified %>%
-            filter(symbol == input$symbol, date >= input$dateRange[1], 
-                   date <= input$dateRange[2]) %>%
-            select(date, symbol, all_of(input$variables)) %>%
-          arrange(desc(date))
-    })
-    # Reactive expression for filtered data for the graphs
+  # Reactive expression for filtered data for the table
+  filteredData <- reactive({
+    req(input$symbol, input$dateRange)
+    mega7data_modified %>%
+      filter(symbol == input$symbol, date >= input$dateRange[1], 
+             date <= input$dateRange[2]) %>%
+      select(date, symbol, all_of(input$variables)) %>%
+      arrange(desc(date))
+  })   
+  filteredDataWithAdditionalVars <- reactive({
+    selectedVars <- c(input$multiChoiceVars)
+    req(input$symbol, input$dateRange, selectedVars)
+    
+      mega7data_modified %>%
+        filter(symbol == input$symbol, date >= input$dateRange[1], date <= input$dateRange[2]) %>%
+        select(date, symbol, all_of(selectedVars)) %>%
+        arrange(desc(date))
+  })
+  # Reactive expression for filtered data for the graphs
   filteredGraphData <- reactive({
     req(input$symbol, input$dateRange)
     data <- mega7data_modified %>%
@@ -78,76 +115,109 @@ server22 <- function(input, output) {
       select(date, adjusted, volume, high, low, open) %>%
       mutate(date = as.Date(date),
              hover_text = paste("Date:", format(date, "%Y-%m-%d"), 
-                              "<br>Open:", sprintf("%.2f", open), 
-                              "<br>Close:", sprintf("%.2f", adjusted),
-                              "<br>High:", sprintf("%.2f", high), 
-                              "<br>Low:", sprintf("%.2f", low),
-                              "<br>Volume:", formatC(volume, format = "f", digits = 2, big.mark = ",")))
-        data
-    })
-    # Render the table
-    output$table <- renderDT({
-      datatable(
-        filteredData(), 
-        options = list(pageLength = 10, autoWidth = TRUE),
-        caption = htmltools::tags$caption(style = "caption-side: top; font-size: 180%;",
-                                          "Stock Price/Volume Data (raw) 原始量价数据")) %>%
-        formatRound(columns = which(names(filteredData()) %in% input$variables), digits = 1) %>%
-        formatStyle("volume", fontWeight = "bold",
-                    `data-thousands` = ",", `data-type` = "formatted-num") %>%
-        formatRound(columns = which(names(filteredData()) == "volume"), digits = 0) %>%
-        formatStyle("adjusted", fontWeight = "bold")
-    })
-  # Render the plot
-    output$candleChart <- renderPlotly({
-        data <- filteredGraphData()
+                                "<br>Open:", sprintf("%.2f", open), 
+                                "<br>Close:", sprintf("%.2f", adjusted),
+                                "<br>High:", sprintf("%.2f", high), 
+                                "<br>Low:", sprintf("%.2f", low),
+                                "<br>Volume:", formatC(volume, format = "f", digits = 2, big.mark = ",")))
+    data
+  })
   
+  # Render the table
+  output$table <- renderDT({
+    datatable(
+      filteredData(), 
+      options = list(pageLength = 10, autoWidth = TRUE),
+      caption = htmltools::tags$caption(style = "caption-side: top; font-size: 180%;",
+                                        "Stock Price/Volume Data (raw) 原始量价数据")) %>%
+      formatRound(columns = which(names(filteredData()) %in% input$variables), digits = 1) %>%
+      formatStyle("volume", fontWeight = "bold",
+                  `data-thousands` = ",", `data-type` = "formatted-num") %>%
+      formatRound(columns = which(names(filteredData()) == "volume"), digits = 0) %>%
+      formatStyle("adjusted", fontWeight = "bold")
+  })
+  
+    # Subjective Filters Tab: Table rendering
+  output$subjectiveTable <- renderDT({
+    datatable(
+      filteredDataWithAdditionalVars(), 
+      options = list(pageLength = 10, autoWidth = TRUE),
+      caption = htmltools::tags$caption(style = "caption-side: top; font-size: 180%;",
+                                        "Subjective Analysis Data")
+    )
+  })
+  
+  
+  # Render the plot
+  output$candleChart <- renderPlotly({
+    data <- filteredGraphData()
+    
     # Constructing the graphs 
-        
-        p <- plot_ly(data, x = ~ date, type ="candlestick",
-                       open = ~ open, close = ~ adjusted,
-                       high = ~ high, low = ~ low) %>%
-          layout(title = paste("Stock Price for", input$symbol, "US Equity: 日股价"),
-                 xaxis = list(title = "Date 日期"),
-                 yaxis = list(title = "Price (USD) 股价")) 
-        
-        formatted_hover_text <- paste('Date:', format(data$date, "%Y-%m-%d"), 
+    
+    p <- plot_ly(data, x = ~ date, type ="candlestick",
+                 open = ~ open, close = ~ adjusted,
+                 high = ~ high, low = ~ low) %>%
+      layout(title = paste("Stock Price for", input$symbol, "US Equity: 日股价"),
+             xaxis = list(title = "Date 日期"),
+             yaxis = list(title = "Price (USD) 股价")) 
+    
+    formatted_hover_text <- paste('Date:', format(data$date, "%Y-%m-%d"), 
                                   '<br>Open:', sprintf("%.2f", data$open), 
                                   '<br>Close:', sprintf("%.2f", data$adjusted),
                                   '<br>High:', sprintf("%.2f", data$high), 
                                   '<br>Low:', sprintf("%.2f", data$low),
                                   '<br>Volume:', formatC(data$volume, format = "f", digits = 0, big.mark = ","))
-
-        p <- p %>% add_trace(
-          x = ~date,
-          y = ~adjusted,
-          type = 'scatter',
-          mode = 'markers',
-          marker = list(size = 1), # Making markers invisible but functional for hover
-          hoverinfo = 'text', 
-          customdata = ~volume,
-          text = ~ hover_text,
-          showlegend = FALSE)
-        
-        
-        p
-    })
     
-
-    output$volumePlot <- renderPlotly({
-        data <- filteredGraphData()
-        req(data$volume)
-  v <- plot_ly(data = data, x = ~date, y = ~volume, type = 'bar', marker = list(color = 'darkorange')) %>%
-    layout(title = paste("Volume for", input$symbol, "US Equity: 日交易量"),
-           xaxis = list(title = "Date 日期"),
-           yaxis = list(title = "Trading Volume 日交易量", tickformat = ",.0f"),
-           hovermode = 'closest')
-
-         
-         v
-
-
-    })
+    p <- p %>% add_trace(
+      x = ~date,
+      y = ~adjusted,
+      type = 'scatter',
+      mode = 'markers',
+      marker = list(size = 1), # Making markers invisible but functional for hover
+      hoverinfo = 'text', 
+      customdata = ~volume,
+      text = ~ hover_text,
+      showlegend = FALSE)
+    
+    
+    p
+  })
+  
+  
+  output$volumePlot <- renderPlotly({
+    data <- filteredGraphData()
+    req(data$volume)
+    v <- plot_ly(data = data, x = ~date, y = ~volume, type = 'bar', marker = list(color = 'darkorange')) %>%
+      layout(title = paste("Volume for", input$symbol, "US Equity: 日交易量"),
+             xaxis = list(title = "Date 日期"),
+             yaxis = list(title = "Trading Volume 日交易量", tickformat = ",.0f"),
+             hovermode = 'closest')
+    
+    
+    v
+    
+    
+  })
+  
+  # Subjective Filters Tab: Dynamic Graph rendering
+  output$subjectiveGraph <- renderPlotly({
+    req(input$singleChoiceVar)
+    data <- filteredDataWithAdditionalVars()
+    
+    # Dynamic graph based on single choice selection
+    p <- ggplot(data, aes_string(x = "date", y = input$singleChoiceVar)) +
+      geom_line() +
+      theme_minimal() +
+      labs(title = paste("Graph of", input$singleChoiceVar, "over Time"),
+           x = "Date",
+           y = input$singleChoiceVar)
+    
+    ggplotly(p)
+  })
+  
+  
+  
+  
   output$instructions <- renderUI({
     HTML('
       <h3>Demo 使用方法:</h3>
@@ -168,6 +238,7 @@ server22 <- function(input, output) {
     
   })
 }
+
 ```
 
 
@@ -175,4 +246,10 @@ server22 <- function(input, output) {
 # Run the application 
 shinyApp(ui22, server22)
 ```
+
+
+
+
+
+
 

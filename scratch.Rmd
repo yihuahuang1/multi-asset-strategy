@@ -1,0 +1,120 @@
+---
+title: "scratch"
+author: "Albert Huang"
+date: "2024-03-20"
+output: html_document
+---
+
+
+```{r}
+ui22 <- fluidPage(
+  tags$head(
+    tags$meta(name = "viewport", content = "width=device-width, initial-scale=1")
+  ),           
+  titlePanel("DEMO: Stock Selection - Interactive Output Page 1 动态交互结果展示(第1部分)",
+             windowTitle = "Interactive Outputs-Stock 1"),
+  div(
+    style = "display: flex; flex-direction: column; height: 100vh;",
+    sidebarLayout(
+      sidebarPanel(
+        selectInput("symbol", "Symbol 代码 DEMO", choices = unique(mega7data_modified$symbol)),
+        dateRangeInput("dateRange", "Date Range 时间范围", 
+                       start = min(mega7data_modified$date), end = max(mega7data_modified$date)),
+        checkboxGroupInput("variables", "Variables 指标 (可多选)", 
+                           choices = c("adjusted" = "adjusted", "high", "low","open", "close",
+                                       "volume"="volume","market cap (USD)"="marketcap"),
+                           selected = c("adjusted","volume")),
+        checkboxGroupInput("multiChoiceVars", "Variable Choices", 
+                           choices = c("Percent Change" = "percentChange",
+                                       "Average Weekly Volume" = "averageWeeklyVolume",
+                                       "Annual Volatility" = "annualVolatility"))
+      ),
+      mainPanel(
+        tabsetPanel(
+          tabPanel("Data Table 数据", DTOutput("table")),
+          tabPanel("Price Chart 股价", plotlyOutput("candleChart")),
+          tabPanel("Volume Chart 交易量", plotlyOutput("volumePlot")),
+          tabPanel("Subjective Filters", DTOutput("subjectiveTable"), uiOutput("dynamicGraphs"))
+        ),
+        style = "flex-grow: 1;"
+      )
+    )
+  )
+)
+
+
+```
+
+
+
+
+
+```{r}
+server22 <- function(input, output) {
+  # Existing filteredData and filteredGraphData reactive expressions remain unchanged
+  
+  # Existing render functions for the table and initial graphs remain unchanged
+  
+  # Dynamic Graphs in Subjective Filters tab
+  output$dynamicGraphs <- renderUI({
+    req(input$multiChoiceVars)
+    vars <- input$multiChoiceVars
+    
+    graphOutputs <- lapply(seq_along(vars), function(i) {
+      varName <- vars[i]
+      plotName <- paste("subjectiveGraph", i, sep = "_")
+      plotlyOutput(plotName)
+    })
+    
+    do.call(tagList, graphOutputs)
+  })
+  
+  observe({
+    lapply(seq_along(input$multiChoiceVars), function(i) {
+      varName <- input$multiChoiceVars[i]
+      outputName <- paste("subjectiveGraph", i, sep = "_")
+      
+      output[[outputName]] <- renderPlotly({
+        req(input$symbol, input$dateRange)
+        data <- filteredDataWithAdditionalVars()
+        
+        # Assuming your data has columns named after the choices
+        # Adjust as necessary to match your actual data structure
+        p <- ggplot(data, aes_string(x = "date", y = varName)) +
+          geom_line() +
+          theme_minimal() +
+          labs(title = paste("Graph of", varName, "over Time"),
+               x = "Date",
+               y = varName)
+        
+        ggplotly(p)
+      })
+    })
+  })
+  
+  # Reactive expression for filtered data with additional variables
+  filteredDataWithAdditionalVars <- reactive({
+    selectedVars <- c(input$variables, input$multiChoiceVars)
+    req(input$symbol, input$dateRange, selectedVars)
+    
+    mega7data_modified %>%
+      filter(symbol == input$symbol, date >= input$dateRange[1], date <= input$dateRange[2]) %>%
+      select(date, symbol, all_of(selectedVars)) %>%
+      arrange(desc(date))
+  })
+  
+    # Render the Subjective Filters table with additional variables
+    datatable(
+      filteredDataWithAdditionalVars(), 
+      options = list(pageLength = 10, autoWidth = TRUE),
+      caption = htmltools::tags$caption(style = "caption-side: top; font-size: 180%;",
+                                        "Detailed Data with Selected Variables")
+    ) %>%
+    formatStyle(columns = c(input$multiChoiceVars), 
+                fontWeight = 'bold', 
+                color = 'blue')
+  })
+}
+
+
+```
