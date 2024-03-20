@@ -43,6 +43,7 @@ ui22 <- fluidPage(
 )
 
 
+str(mega7data_modified)
 ```
 
 
