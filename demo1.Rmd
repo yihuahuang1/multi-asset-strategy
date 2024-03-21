@@ -17,12 +17,10 @@ library(shinydashboard)
 
 mega7subjyurl <- url("https://gitee.com/yihuahuang1/stockdata/raw/master/mega7subj.csv")
 mega7capurl <- url("https://gitee.com/yihuahuang1/stockdata/raw/master/mega7marketcap.csv")
-mega7data = read.csv(mega7subjyurl)
-mega7mcap = read.csv(mega7capurl)
-# mega7data <- read.csv("mega7subj.csv")
-# mega7mcap = read.csv("mega7marketcap.csv")
-
-
+#mega7data = read.csv(mega7subjyurl)
+#mega7mcap = read.csv(mega7capurl)
+mega7data <- read.csv("mega7subj.csv")
+mega7mcap = read.csv("mega7marketcap.csv")
 
 mega7data_modified <- 
   mega7data %>%
@@ -48,14 +46,14 @@ ui22 <- fluidPage(
     style = "display: flex; flex-direction: column; height: 200vh;",
     sidebarLayout(
       sidebarPanel(
-        selectInput("symbol", "Symbol 代码 DEMO", 
+        selectInput("symbol", "Ticker 代码 DEMO", 
                     choices = unique(mega7data_modified$symbol)),
         
         dateRangeInput("dateRange", "Date Range 时间范围", 
                        start = min(mega7data_modified$date), 
                        end = max(mega7data_modified$date)),
         
-        checkboxGroupInput("variables", "Variables 指标 (可多选)", 
+        checkboxGroupInput("variables", "Variables 量价数据 (可多选)", 
                            choices = c("Adjusted close" = "adjusted", "High" = "high", 
                                        "Low" = "low","Open" = "open", "Close" = "close",
                                        "Trading volume" = "volume",
@@ -123,22 +121,31 @@ server22 <- function(input, output) {
   
   
   
-  # Render the table
+  # Render the raw data table
   output$table <- renderDT({
-    datatable(
-      filteredData(), 
-      options = list(pageLength = 10, autoWidth = TRUE),
-      caption = htmltools::tags$caption(style = "caption-side: top; font-size: 180%;",
-                                        "Stock Price/Volume Data (raw) 原始量价数据")) %>%
-      formatRound(columns = which(names(filteredData()) %in% input$variables), digits = 1) %>%
-      formatStyle("volume", fontWeight = "bold",
-                  `data-thousands` = ",", `data-type` = "formatted-num") %>%
-      formatRound(columns = which(names(filteredData()) == "volume"), digits = 0) %>%
-      formatRound(columns = which(names(filteredData()) == "marketcap"),digits = 1) %>%
-      formatStyle("adjusted", fontWeight = "bold")
+    # Prepare the data
+  dataForTable <- 
+    filteredData()
+  
+    # Capitalize the first letter of each column name
+  colnames(dataForTable) <- sapply(colnames(dataForTable), function(name) {
+    paste(toupper(substring(name, 1, 1)), substring(name, 2), sep = "")
   })
-  
-  
+    
+    # Render the datatable with column filters
+    datatable(
+      dataForTable,
+      filter = "top", # Add filters at the top of all columns 
+      options = list(pageLength = 8, autoWidth = TRUE),
+      caption = htmltools::tags$caption(style = "caption-side: top; font-size: 180%;",
+                                        fontWeight = "bold","Stock Price/Volume Data (raw) 原始量价数据")) %>%
+      formatRound(columns = which(names(dataForTable) %in% c("Adjusted", "High", "Low", "Open", "Close", "Volume", "Marketcap")), digits = 1) %>%
+      formatStyle("Volume", fontWeight = "bold", `data-thousands` = ",", `data-type` = "formatted-num") %>%
+      formatStyle("Adjusted", fontWeight = "bold") %>%
+      formatRound(columns = which(names(dataForTable) == "Volume"), digits = 0) %>%
+      formatRound(columns = which(names(dataForTable) == "Marketcap"), digits = 0)
+})
+
   # Reactive expression for filtered data with additional variables
   filteredDataWithAdditionalVars <- reactive({
     selectedVars <- c(input$variables, input$multiChoiceVars)
@@ -165,22 +172,23 @@ server22 <- function(input, output) {
       formatStyle(columns = c(input$multiChoiceVars), fontWeight = 'bold', color = 'blue')
 })
         
-        
-
 
   
-  # Render the plot candle stick
+  # Render the Price Chart Plot Candlestick
   output$candleChart <- renderPlotly({
     data <- filteredGraphData()
     req(data$date, data$open, data$adjusted, data$high, data$low)
+  
     # Constructing the graphs 
     
     p <- plot_ly(data, x = ~ date, type ="candlestick",
                  open = ~ open, close = ~ adjusted,
-                 high = ~ high, low = ~ low) %>%
+                 high = ~ high, low = ~ low,               
+                 increasing = list(line = list(color = "green")),
+                 decreasing = list(line = list(color = "red"))) %>%
       layout(title = paste("Stock Price for", input$symbol, "US Equity: 日股价"),
              xaxis = list(title = "Date 日期"),
-             yaxis = list(title = "Price (USD) 股价")) 
+             yaxis = list(title = "Price (USD) 股价", autorange = TRUE)) # Apply y-axis range
     
     formatted_hover_text <- paste('Date:', format(data$date, "%Y-%m-%d"), 
                                   '<br>Open:', sprintf("%.2f", data$open), 
@@ -202,25 +210,36 @@ server22 <- function(input, output) {
       showlegend = FALSE)
     
     
-    p
+    return(p)
+    
   })
   
+  
+  # Render the Volume Plot
   
   output$volumePlot <- renderPlotly({
     data <- filteredGraphData()
     req(data$volume)
-    v <- plot_ly(data = data, x = ~date, y = ~volume, 
+    
+    
+    v <- plot_ly(data = data, x = ~date, y = ~volume, name = "Volume", 
                  type = 'bar', marker = list(color = 'darkorange')) %>%
       layout(title = paste("Volume for", input$symbol, "US Equity: 日交易量"),
              xaxis = list(title = "Date 日期"),
              yaxis = list(title = "Trading Volume 日交易量", tickformat = ",.0f"),
              hovermode = 'closest')
     
-    
-    v
+ # Add a trend line by connecting volumes with a line
+  v <- add_trace(v, x = ~date, y = ~volume, type = 'scatter', mode = 'lines',
+                 line = list(color = 'green'), name = 'Trend Line 交易量趋势线',
+                 showlegend = FALSE)
+  
+  v
+  
   })
   
   
+   
  # Dynamic Graphs in Subjective Filters tab
   output$dynamicGraphs <- renderUI({
     req(input$multiChoiceVars)
@@ -289,18 +308,19 @@ server22 <- function(input, output) {
   
   output$instructions <- renderUI({
     HTML('
-      <h3>Demo 使用方法:</h3>
+      <h3>DEMO Interactive Page 使用方法:</h3>
       <ul>
         <h4>数据表格 Data Table:</h4>
-        <li> 1. 在左侧下拉框选择标的代码。Select the stock symbol from the drop-down menu on the left. </li>
+        <li> 1. 左侧下拉框中选择标的<strong>代码</strong>。Select the stock <strong>ticker</strong> from the drop-down menu on the left. </li>
         <li>2. 在左侧可调整数据展示的时间范围。Input the date range you want the displayed data table to contain. </li>
-        <li>3. 根据需求选择指标，可多选，所需指标会展示在右侧表格中。Select the variables needed, the filtered data table will be displayed to the right.</li>
+        <li>3. 根据需求选择<strong>量价数据</strong>，可多选，所需数据会展示在右侧<strong>数据表</strong>中。Select the <strong>variables</strong> needed, the requested <strong>data table</strong> will be displayed to the right.</li>
+        <li>4. 在数据表上方设定<strong>排序条件</strong>。Set <strong>sorting rules</strong> for each column is available at the top.</li>
         <h4>股价图表 Price Chart:</h4>
-        <li>1. 框选时间轴放大,移动时间轴缩放,双击恢复默认时间轴。 Select on the time line to zoom in, move the scale to zoom in/out, and double click to restore the default time line. </li> 
-        <li>2. 移动光标到蜡烛图可见该交易(日)周期详细数据。Mover cursor or hoover on the candlestick price chart to observe the detailed price and volume data for the (day) duration.</li>
-        <h4>成交量图表 Volume Chart:</h4>
-        <li>1. 框选图表放大时间轴,双击恢复默认时间轴。 Select on the chart to zoom in, and double click to restore the default time line. </li> 
-        <li>2. 移动光标到蜡烛图可见该交易(日)周期的交易量数据。Mover cursor or hoover on the volume chart to observe the exact trading volume data for the (day) duration.</li>
+        <li>1. 框选时间轴放大,移动<strong>时间轴</strong>缩放,<strong>双击恢复默认</strong>时间轴。 Select on the intended area to zoom in, move the <strong>time line tool</strong> to zoom in/out, and <strong>double click to restore the default.</strong>set time line. </li> 
+        <li>2. <strong>移动光标到蜡烛图</strong>可见该交易(日)周期详细量价数据。<strong>Mover cursor or hoover on the candlestick graph</strong> to observe the detailed price and volume data for the (day) duration.</li>
+        <h4>交易量图表 Volume Chart:</h4>
+         <li>1. 框选时间轴放大,移动<strong>时间轴</strong>缩放,<strong>双击恢复默认</strong>时间轴。 Select on the intended area to zoom in, move the <strong>time line tool</strong> to zoom in/out, and <strong>double click to restore the default.</strong>set time line. </li> 
+        <li>2. <strong>移动光标到成交量图表</strong>可见该交易(日)周期的交易量和趋势数据。<strong>Mover cursor or hoover on the volume chart</strong> to observe the exact trading volume data and trend for the (day) duration.</li>
       </ul>
     ')
     
@@ -311,7 +331,7 @@ server22 <- function(input, output) {
 ```
 
 
-```{r echo=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 # Run the application 
 shinyApp(ui22, server22)
 ```
