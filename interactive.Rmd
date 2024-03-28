@@ -1,0 +1,9 @@
+# DEMO: Stock Selection: Interactive Output 动态交互结果展示 {-}
+
+* [Stock-1-demo](https://mas-apps-stock-1-demo.streamlit.app)
+
+```{r echo=FALSE}
+knitr::include_url("https://mas-apps-stock-1-demo.streamlit.app")
+```
+
+`In Progress`

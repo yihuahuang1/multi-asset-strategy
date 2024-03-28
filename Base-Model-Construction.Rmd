@@ -86,7 +86,9 @@ Most importantly, trading signals directly influenced by the parameter settings;
 
 翻译
 
-* Step 5: Stock Selection & Trading Signals – the Base Model By finishing the process of datasets inputs, and the elimination of stocks on portfolio-specific (‘nonviable’) filters, the (base) stock selection model can now fetch the up-to-date stock trading statistics through the chosen combinations of significant technical indicators.
+* Step 5: Stock Selection & Trading Signals – the Base Model   
+
+By finishing the process of datasets inputs, and the elimination of stocks on portfolio-specific (‘nonviable’) filters, the (base) stock selection model can now fetch the up-to-date stock trading statistics through the chosen combinations of significant technical indicators.
 
 By design, every technical indicator generates a trading signal based on the given parameter settings for each stock.
 Following, the model counts the number of trading signals generated for each stock.
@@ -564,6 +566,10 @@ remove_stock_list <-
   t(rbind(cap_remove_list,volume_remove_list,prcpct_remove_list,volat_remove_list)) 
 
 colnames(remove_stock_list) <- "remove_stock_list"
+
+# Export list for streamlit
+remove_stock_list_df <- as.data.frame(remove_stock_list)
+write_csv(remove_stock_list_df,"remove_stock_list.csv")
 
 kbl(tail(remove_stock_list,10), booktabs = T, linesep = "", 
     col.names = "Symbol" , 

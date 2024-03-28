@@ -5,7 +5,7 @@ language:
 rmd_files: [
   "index.Rmd",
   "Quick-Table-of-Contents.Rmd",
-  "interactive1.Rmd",
+  "interactive.Rmd",
   "Multi-asset-Investment-Strategy.Rmd",
   "Investment-Strategy-Outlook.Rmd",
   "Base-Model-Construction.Rmd",
